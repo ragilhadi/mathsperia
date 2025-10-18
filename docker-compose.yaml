@@ -1,0 +1,32 @@
+services:
+  mathsperia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VERSION: ${VERSION:-v1.0.0}
+    image: mathsperia:${VERSION:-v1.0.0}
+    container_name: mathsperia
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=3001
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - mathsperia-network
+
+networks:
+  mathsperia-network:
+    driver: bridge
+
+volumes:
+  mathsperia-data:
+    driver: local
