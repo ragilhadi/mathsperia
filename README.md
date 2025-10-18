@@ -4,7 +4,7 @@
 
 ## ✨ Features
 
-### 🎯 Core Features (Phase 1)
+### 🎯 Core Features
 
 - **9 Interactive Shape Calculators**
   - Circle, Rectangle, Square, Triangle, Trapezoid, Parallelogram, Ellipse, Rhombus, Kite
