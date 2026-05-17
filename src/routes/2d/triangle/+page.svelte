@@ -1,75 +1,69 @@
-<svelte:head>
-	<title>Triangle Types - Mathsperia</title>
-	<meta name="description" content="Choose from different triangle types to calculate area and perimeter." />
-</svelte:head>
+<script lang="ts">
+	import SeoHead from '$lib/components/SeoHead.svelte';
+	import { categoryPageData } from '$lib/utils/seo';
+	import ShapeCard from '$lib/components/ShapeCard.svelte';
+	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 
-<div class="min-h-screen bg-[#0e0e10] py-8 px-4">
-	<div class="max-w-5xl mx-auto">
-		<!-- Back Button -->
-		<a href="/2d" class="inline-flex items-center text-blue-500 hover:text-blue-400 mb-6 transition-colors">
-			← Back to 2D Geometry
-		</a>
+	const pageData = categoryPageData({
+		name: 'Triangle Calculators',
+		urlPath: '/2d/triangle',
+		description: 'Interactive triangle calculators for all triangle types — equilateral, isosceles, right, and scalene.',
+		itemList: [
+			{ name: 'Equilateral Triangle Calculator', url: '/2d/triangle/equilateral' },
+			{ name: 'Isosceles Triangle Calculator', url: '/2d/triangle/isosceles' },
+			{ name: 'Right Triangle Calculator', url: '/2d/triangle/right' },
+			{ name: 'Scalene Triangle Calculator', url: '/2d/triangle/scalene' }
+		]
+	});
 
-		<!-- Header -->
-		<header class="text-center mb-12">
-			<h1 class="text-4xl font-bold mb-4 text-blue-500">🔺 Triangle Calculators</h1>
-			<p class="text-xl text-[#9ca3af] mb-2">Choose your triangle type</p>
-			<p class="text-sm text-[#9ca3af]">Different types have specific calculation methods</p>
-		</header>
+	const triangleTypes = [
+		{
+			name: 'Equilateral',
+			href: '/2d/triangle/equilateral',
+			description: 'All sides equal',
+			svgPreview: '<svg viewBox="0 0 100 100" class="w-16 h-16"><polygon points="50,18 86,78 14,78" fill="none" stroke="#818CF8" stroke-width="2"/></svg>'
+		},
+		{
+			name: 'Isosceles',
+			href: '/2d/triangle/isosceles',
+			description: 'Two sides equal',
+			svgPreview: '<svg viewBox="0 0 100 100" class="w-16 h-16"><polygon points="50,22 82,80 18,80" fill="none" stroke="#818CF8" stroke-width="2"/></svg>'
+		},
+		{
+			name: 'Right Triangle',
+			href: '/2d/triangle/right',
+			description: '90° angle',
+			svgPreview: '<svg viewBox="0 0 100 100" class="w-16 h-16"><polygon points="22,78 22,34 74,78" fill="none" stroke="#818CF8" stroke-width="2"/></svg>'
+		},
+		{
+			name: 'Scalene',
+			href: '/2d/triangle/scalene',
+			description: 'All sides different',
+			svgPreview: '<svg viewBox="0 0 100 100" class="w-16 h-16"><polygon points="24,76 48,20 84,80" fill="none" stroke="#818CF8" stroke-width="2"/></svg>'
+		}
+	];
+</script>
 
-		<!-- Triangle Types Grid -->
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-			<!-- Equilateral Triangle -->
-			<a href="/2d/triangle/equilateral" class="block bg-[#1a1a1d] border-2 border-blue-500 rounded-lg p-6 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:brightness-110">
-				<div class="text-center">
-					<div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-						<svg viewBox="0 0 100 100" class="w-full h-full">
-							<polygon points="50,20 85,75 15,75" fill="none" stroke="#3b82f6" stroke-width="2" />
-						</svg>
-					</div>
-					<h3 class="text-lg font-bold mb-2 text-blue-500">Equilateral</h3>
-					<p class="text-sm text-[#9ca3af]">All sides equal</p>
-				</div>
-			</a>
+<SeoHead
+	title="Triangle Calculators — 4 Types | Mathsperia"
+	description="Interactive triangle calculators for equilateral, isosceles, right, and scalene triangles. Calculate area and perimeter with step-by-step formulas, real-time diagrams, and instant results. Free — no signup."
+	canonicalPath="/2d/triangle"
+	keywords="triangle calculator, triangle area calculator, equilateral triangle, isosceles triangle, right triangle, scalene triangle, herons formula, pythagorean theorem, triangle perimeter, triangle sides"
+	structuredData={pageData}
+/>
 
-			<!-- Isosceles Triangle -->
-			<a href="/2d/triangle/isosceles" class="block bg-[#1a1a1d] border-2 border-cyan-500 rounded-lg p-6 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:brightness-110">
-				<div class="text-center">
-					<div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-						<svg viewBox="0 0 100 100" class="w-full h-full">
-							<polygon points="50,25 80,75 20,75" fill="none" stroke="#06b6d4" stroke-width="2" />
-						</svg>
-					</div>
-					<h3 class="text-lg font-bold mb-2 text-cyan-500">Isosceles</h3>
-					<p class="text-sm text-[#9ca3af]">Two sides equal</p>
-				</div>
-			</a>
+<Breadcrumb items={[{ label: 'Home', href: '/' }, { label: '2D Geometry', href: '/2d' }, { label: 'Triangle Types' }]} />
+<p class="micro-label mb-3">Triangle Types</p>
+<h1 class="font-display font-bold text-4xl tracking-tight text-text-primary mb-2">Choose Your Triangle</h1>
+<p class="text-text-secondary mb-10">Different types have specific calculation methods.</p>
 
-			<!-- Right Triangle -->
-			<a href="/2d/triangle/right" class="block bg-[#1a1a1d] border-2 border-violet-500 rounded-lg p-6 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] hover:brightness-110">
-				<div class="text-center">
-					<div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-						<svg viewBox="0 0 100 100" class="w-full h-full">
-							<polygon points="25,75 25,35 70,75" fill="none" stroke="#8b5cf6" stroke-width="2" />
-						</svg>
-					</div>
-					<h3 class="text-lg font-bold mb-2 text-violet-500">Right Triangle</h3>
-					<p class="text-sm text-[#9ca3af]">90° angle</p>
-				</div>
-			</a>
-
-			<!-- Scalene Triangle -->
-			<a href="/2d/triangle/scalene" class="block bg-[#1a1a1d] border-2 border-green-500 rounded-lg p-6 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-[0_0_20px_rgba(34,197,94,0.5)] hover:brightness-110">
-				<div class="text-center">
-					<div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-						<svg viewBox="0 0 100 100" class="w-full h-full">
-							<polygon points="30,70 55,25 85,75" fill="none" stroke="#22c55e" stroke-width="2" />
-						</svg>
-					</div>
-					<h3 class="text-lg font-bold mb-2 text-green-500">Scalene</h3>
-					<p class="text-sm text-[#9ca3af]">All sides different</p>
-				</div>
-			</a>
-		</div>
-	</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+	{#each triangleTypes as type}
+		<ShapeCard
+			name={type.name}
+			href={type.href}
+			description={type.description}
+			svgPreview={type.svgPreview}
+		/>
+	{/each}
 </div>

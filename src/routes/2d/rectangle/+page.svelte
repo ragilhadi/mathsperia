@@ -1,16 +1,41 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import FormulaDisplay from '$lib/components/FormulaDisplay.svelte';
+	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import BackButton from '$lib/components/BackButton.svelte';
+	import UnitSelector from '$lib/components/UnitSelector.svelte';
+	import ShapeFacts from '$lib/components/ShapeFacts.svelte';
+	import ShapeProperties from '$lib/components/ShapeProperties.svelte';
 	import { calculateRectangle } from '$lib/utils/shapes';
 	import { formatNumber, clamp } from '$lib/utils/format';
+	import { getLastUnit, areaUnitLabel, type Unit } from '$lib/utils/units';
+	import SeoHead from '$lib/components/SeoHead.svelte';
+	import { mathSolverData } from '$lib/utils/seo';
+
+	const pageData = mathSolverData({
+		shape: 'Rectangle',
+		urlPath: '/2d/rectangle',
+		category: '2D',
+		resultType: 'area and perimeter',
+		keywords: 'rectangle area calculator, rectangle perimeter calculator, length width math'
+	});
 
 	let length = $state(8);
 	let width = $state(5);
-	let result = $state(calculateRectangle(length, width));
+	let unit = $state<Unit>(getLastUnit());
+	let result = $state<ReturnType<typeof calculateRectangle>>(calculateRectangle(8, 5));
 
-	// Scale factor to fit SVG (larger values = smaller displayed size)
 	let scaleFactor = $derived(Math.max(length, width) / 8);
 	let svgLength = $derived(clamp(length / scaleFactor * 10, 20, 160));
 	let svgWidth = $derived(clamp(width / scaleFactor * 10, 20, 160));
+
+	let evaluatedArea = $derived(
+		`A = \\text{${formatNumber(length)}} \\times \\text{${formatNumber(width)}} = \\text{${formatNumber(result.area)}} \\text{ ${unit}}^2`
+	);
+	let evaluatedPerimeter = $derived(
+		`P = 2(\\text{${formatNumber(length)}} + \\text{${formatNumber(width)}}) = \\text{${formatNumber(result.perimeter)}} \\text{ ${unit}}`
+	);
 
 	function handleCalculate() {
 		result = calculateRectangle(length, width);
@@ -22,97 +47,176 @@
 		result = calculateRectangle(length, width);
 	}
 
+	function updateUrl() {
+		if (typeof window === 'undefined') return;
+		const params = new URLSearchParams();
+		params.set('l', String(length));
+		params.set('w', String(width));
+		if (unit !== 'cm') params.set('unit', unit);
+		const newUrl = `?${params.toString()}`;
+		if (newUrl !== window.location.search && newUrl !== '?') {
+			history.replaceState(history.state, '', newUrl);
+		}
+	}
+
+	function handleKeyDown(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			handleCalculate();
+			updateUrl();
+		}
+	}
+
+	onMount(() => {
+		const sp = $page.url.searchParams;
+		const l = sp.get('l');
+		if (l !== null) {
+			const val = parseFloat(l);
+			if (!isNaN(val) && val > 0) length = val;
+		}
+		const w = sp.get('w');
+		if (w !== null) {
+			const val = parseFloat(w);
+			if (!isNaN(val) && val > 0) width = val;
+		}
+		const u = sp.get('unit') as Unit | null;
+		if (u === 'mm' || u === 'cm' || u === 'm' || u === 'km' || u === 'in' || u === 'ft' || u === 'yd') {
+			unit = u;
+		}
+		handleCalculate();
+	});
+
 	$effect(() => {
 		handleCalculate();
+		updateUrl();
 	});
 </script>
 
-<svelte:head>
-	<title>Rectangle Calculator - Mathsperia</title>
-	<meta name="description" content="Calculate the area and perimeter of a rectangle with an interactive visual calculator." />
-</svelte:head>
+<SeoHead
+	title="Rectangle Calculator — Area & Perimeter"
+	description="Interactive rectangle calculator. Calculate area and perimeter with step-by-step formulas, real-time diagrams, and instant results. Free — no signup."
+	canonicalPath="/2d/rectangle"
+	keywords="rectangle area calculator, rectangle perimeter calculator, length width math"
+	structuredData={pageData}
+/>
 
-<div class="min-h-screen bg-[#0e0e10] py-8 px-4">
-	<div class="max-w-5xl mx-auto">
-		<a href="/2d" class="inline-flex items-center text-cyan-500 hover:text-cyan-400 mb-6 transition-colors">
-			← Back to 2D Geometry
-		</a>
+<Breadcrumb items={[
+	{ label: 'Home', href: '/' },
+	{ label: '2D Geometry', href: '/2d' },
+	{ label: 'Rectangle' }
+]} />
 
-		<header class="text-center mb-8">
-			<h1 class="text-4xl font-bold mb-2 text-cyan-500">Rectangle Calculator</h1>
-			<p class="text-[#9ca3af]">Calculate area and perimeter of a rectangle</p>
-		</header>
+<BackButton href="/2d" />
 
-		<div class="grid md:grid-cols-2 gap-8">
-			<div class="bg-[#1a1a1d] rounded-lg p-8 border border-cyan-500/30">
-				<div class="aspect-square flex items-center justify-center">
-					<svg viewBox="0 0 200 200" class="w-full h-full">
-						<defs>
-							<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-								<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#333" stroke-width="0.5" />
-							</pattern>
-						</defs>
-						<rect width="200" height="200" fill="url(#grid)" />
+<div class="mb-8">
+	<p class="micro-label mb-2">2D Geometry</p>
+	<h1 class="font-display font-bold text-4xl tracking-tight text-text-primary">Rectangle Calculator</h1>
+	<p class="text-text-secondary mt-2">Calculate area and perimeter of a rectangle.</p>
+</div>
 
-						<rect
-							x={100 - svgLength / 2}
-							y={100 - svgWidth / 2}
-							width={svgLength}
-							height={svgWidth}
-							fill="none"
-							stroke="#06b6d4"
-							stroke-width="2"
-							class="drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]"
-						/>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+	<!-- Left: Visualization -->
+	<div class="glow-panel aspect-square flex items-center justify-center p-8">
+		<svg viewBox="0 0 200 200" class="shape-glow w-full h-full max-w-xs">
+			<rect
+				x={100 - svgLength / 2}
+				y={100 - svgWidth / 2}
+				width={svgLength}
+				height={svgWidth}
+				fill="rgba(99,102,241,0.08)"
+				stroke="#818CF8"
+				stroke-width="2"
+			/>
+			<line x1={100 - svgLength / 2} y1={100 - svgWidth / 2 - 6} x2={100 + svgLength / 2} y2={100 - svgWidth / 2 - 6}
+				stroke="rgba(148, 163, 184, 0.4)" stroke-width="1" stroke-dasharray="4 3"/>
+			<text x="100" y={100 - svgWidth / 2 - 10} font-family="JetBrains Mono" font-size="11" fill="#475569" text-anchor="middle">
+				l = {formatNumber(length)}
+			</text>
+			<line x1={100 + svgLength / 2 + 6} y1={100 - svgWidth / 2} x2={100 + svgLength / 2 + 6} y2={100 + svgWidth / 2}
+				stroke="rgba(148, 163, 184, 0.4)" stroke-width="1" stroke-dasharray="4 3"/>
+			<text x={100 + svgLength / 2 + 14} y="100" font-family="JetBrains Mono" font-size="11" fill="#475569" text-anchor="start">
+				w = {formatNumber(width)}
+			</text>
+		</svg>
+	</div>
 
-						<text x="100" y={100 - svgWidth / 2 - 8} fill="#06b6d4" font-size="12" text-anchor="middle">
-							l = {formatNumber(length)}
-						</text>
-						<text x={100 + svgLength / 2 + 15} y="100" fill="#3b82f6" font-size="12" text-anchor="start">
-							w = {formatNumber(width)}
-						</text>
-					</svg>
+	<!-- Right: Inputs + Formula + Results -->
+	<div class="surface-panel p-6 flex flex-col gap-6">
+		<!-- Inputs -->
+		<div class="flex flex-col gap-4">
+			<div class="flex items-center justify-between">
+				<p class="micro-label">Dimensions</p>
+				<UnitSelector bind:unit />
+			</div>
+			<div class="flex flex-col gap-1.5">
+				<label class="micro-label" for="length">Length (l)</label>
+				<div class="relative">
+					<input
+						id="length"
+						type="number"
+						min="0"
+						class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150"
+						placeholder="Enter a positive number"
+						bind:value={length}
+						onkeydown={handleKeyDown}
+					/>
+					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
 				</div>
 			</div>
-
-			<div class="space-y-6">
-				<div class="bg-[#1a1a1d] rounded-lg p-6 border border-gray-700">
-					<h2 class="text-xl font-semibold mb-4 text-[#e5e7eb]">Input</h2>
-					<div class="space-y-4">
-						<div>
-							<label for="length" class="block text-sm font-medium text-[#9ca3af] mb-2">Length (l)</label>
-							<input id="length" type="number" bind:value={length} min="0.1" step="0.1" oninput={(e) => { if (e.currentTarget.value && parseFloat(e.currentTarget.value) < 0) e.currentTarget.value = '0.1'; }}
-							class="w-full px-4 py-2 bg-[#0e0e10] border border-gray-600 rounded-lg text-[#e5e7eb] focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500" />
-						</div>
-						<div>
-							<label for="width" class="block text-sm font-medium text-[#9ca3af] mb-2">Width (w)</label>
-							<input id="width" type="number" bind:value={width} min="0.1" step="0.1" oninput={(e) => { if (e.currentTarget.value && parseFloat(e.currentTarget.value) < 0) e.currentTarget.value = '0.1'; }}
-							class="w-full px-4 py-2 bg-[#0e0e10] border border-gray-600 rounded-lg text-[#e5e7eb] focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500" />
-						</div>
-					</div>
-					<button onclick={handleReset} class="mt-4 w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 text-[#e5e7eb] rounded-lg transition-colors">Reset</button>
+			<div class="flex flex-col gap-1.5">
+				<label class="micro-label" for="width">Width (w)</label>
+				<div class="relative">
+					<input
+						id="width"
+						type="number"
+						min="0"
+						class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150"
+						placeholder="Enter a positive number"
+						bind:value={width}
+						onkeydown={handleKeyDown}
+					/>
+					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
 				</div>
+			</div>
+			<button
+				onclick={handleReset}
+				class="w-full px-4 py-2.5 bg-bg-inset border border-border-default rounded-lg text-text-secondary hover:text-text-primary hover:border-border-strong transition-colors duration-150 font-mono text-sm"
+			>
+				Reset
+			</button>
+		</div>
 
-				<div class="bg-[#1a1a1d] rounded-lg p-6 border border-cyan-500/30">
-					<h2 class="text-xl font-semibold mb-4 text-[#e5e7eb]">Results</h2>
-					<div class="space-y-3">
-						<div class="flex justify-between items-center py-2 border-b border-gray-700">
-							<span class="text-[#9ca3af]">Area:</span>
-							<span class="text-2xl font-bold text-cyan-500">{formatNumber(result.area)} units²</span>
-						</div>
-						<div class="flex justify-between items-center py-2">
-							<span class="text-[#9ca3af]">Perimeter:</span>
-							<span class="text-2xl font-bold text-blue-500">{formatNumber(result.perimeter)} units</span>
-						</div>
-					</div>
+		<hr class="border-border-divider" />
+
+		<!-- Formula -->
+		<div>
+			<p class="micro-label mb-3">Formulas</p>
+			<FormulaDisplay template={result.formulas.area} evaluated={evaluatedArea} />
+			<div class="mt-3"></div>
+			<FormulaDisplay template={result.formulas.perimeter} evaluated={evaluatedPerimeter} />
+		</div>
+
+		<hr class="border-border-divider" />
+
+		<!-- Results -->
+		<div>
+			<p class="micro-label mb-3">Results</p>
+			<div class="flex flex-wrap gap-3">
+				<div class="result-chip animate-fade-slide-up">
+					<span class="micro-label text-text-muted">Area</span>
+					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
+						{formatNumber(result.area)} <span class="text-sm text-emerald/70">{areaUnitLabel(unit)}</span>
+					</span>
 				</div>
-
-				<div>
-					<h2 class="text-xl font-semibold mb-4 text-[#e5e7eb]">Formulas</h2>
-					<FormulaDisplay formula={result.formulas.area} label="Area" />
-					<FormulaDisplay formula={result.formulas.perimeter} label="Perimeter" />
+				<div class="result-chip animate-fade-slide-up" style="animation-delay: 50ms">
+					<span class="micro-label text-text-muted">Perimeter</span>
+					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
+						{formatNumber(result.perimeter)} <span class="text-sm text-emerald/70">{unit}</span>
+					</span>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<ShapeFacts shapeId="rectangle" />
+<ShapeProperties shapeId="rectangle" />

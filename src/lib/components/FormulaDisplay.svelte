@@ -4,49 +4,64 @@
 	import katex from 'katex';
 
 	interface Props {
-		formula: string;
-		label?: string;
+		template: string;
+		evaluated: string;
 	}
 
-	let { formula, label }: Props = $props();
-	let formulaElement: HTMLDivElement | undefined = $state(undefined);
+	let { template, evaluated }: Props = $props();
+	let templateElement: HTMLDivElement | undefined = $state(undefined);
+	let evaluatedElement: HTMLDivElement | undefined = $state(undefined);
 
-	function renderFormula() {
-		if (browser && formulaElement && formula) {
+	function renderKatex(element: HTMLDivElement | undefined, formula: string) {
+		if (browser && element && formula) {
 			try {
-				katex.render(formula, formulaElement, {
+				katex.render(formula, element, {
 					throwOnError: false,
 					displayMode: true
 				});
 			} catch (error) {
 				console.error('KaTeX rendering error:', error);
-				formulaElement.textContent = formula;
+				element.textContent = formula;
 			}
 		}
 	}
 
 	onMount(() => {
-		renderFormula();
+		renderKatex(templateElement, template);
+		renderKatex(evaluatedElement, evaluated);
 	});
 
 	$effect(() => {
-		renderFormula();
+		renderKatex(templateElement, template);
+		renderKatex(evaluatedElement, evaluated);
 	});
 </script>
 
-<div class="bg-[#1a1a1d] border border-gray-700 rounded-lg p-4 my-3">
-	{#if label}
-		<div class="text-sm text-[#9ca3af] mb-2 font-semibold">{label}</div>
-	{/if}
-	<div bind:this={formulaElement} class="text-center text-[#e5e7eb] katex-formula"></div>
+<div class="formula-panel flex flex-col gap-3">
+	<!-- Template -->
+	<div>
+		<p class="micro-label mb-1.5" style="color: rgba(252, 211, 77, 0.6)">Template</p>
+		<div bind:this={templateElement} class="katex-template"></div>
+	</div>
+	<!-- Divider -->
+	<hr class="border-border-divider" />
+	<!-- Evaluated -->
+	<div>
+		<p class="micro-label mb-1.5" style="color: rgba(252, 211, 77, 0.6)">Calculation</p>
+		<div bind:this={evaluatedElement} class="katex-evaluated font-mono text-amber"></div>
+	</div>
 </div>
 
 <style>
-	:global(.katex-formula .katex) {
-		font-size: 1.2em;
+	:global(.katex-template .katex),
+	:global(.katex-evaluated .katex) {
+		font-size: 1.1em;
 	}
-
-	:global(.katex-formula .katex-display) {
+	:global(.katex-template .katex-display),
+	:global(.katex-evaluated .katex-display) {
 		margin: 0;
+	}
+	:global(.katex) {
+		color: var(--color-text-primary);
 	}
 </style>

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
@@ -5,48 +7,185 @@
 /* KaTeX CSS for mathematical formulas */
 @import 'katex/dist/katex.min.css';
 
-/* Mathsperia Dark Theme */
+/* Mathsperia — Precision Observatory Design System */
 :root {
-	--color-bg-primary: #0e0e10;
-	--color-bg-secondary: #1a1a1d;
-	--color-text-primary: #e5e7eb;
-	--color-text-secondary: #9ca3af;
-	--color-accent-blue: #3b82f6;
-	--color-accent-cyan: #06b6d4;
-	--color-accent-violet: #8b5cf6;
+	/* Surfaces */
+	--color-bg-base: #07090F;
+	--color-bg-surface: #0D1117;
+	--color-bg-elevated: #141B2D;
+	--color-bg-overlay: #1C2540;
+	--color-bg-inset: #090D16;
+
+	/* Text */
+	--color-text-primary: #F1F5F9;
+	--color-text-secondary: #94A3B8;
+	--color-text-muted: #475569;
+
+	/* Indigo — primary accent */
+	--color-indigo-dim: #312E81;
+	--color-indigo-mid: #4F46E5;
+	--color-indigo: #818CF8;
+	--color-indigo-bright: #C7D2FE;
+
+	/* Emerald — results */
+	--color-emerald-dim: #064E3B;
+	--color-emerald: #34D399;
+	--color-emerald-bright: #A7F3D0;
+
+	/* Amber — formulas */
+	--color-amber-dim: #451A03;
+	--color-amber: #FCD34D;
+	--color-amber-bright: #FEF3C7;
+
+	/* Rose — errors */
+	--color-rose: #F87171;
+	--color-rose-dim: #450A0A;
+
+	/* Borders */
+	--color-border-subtle: rgba(99, 102, 241, 0.10);
+	--color-border-default: rgba(99, 102, 241, 0.20);
+	--color-border-strong: rgba(99, 102, 241, 0.40);
+	--color-border-divider: rgba(148, 163, 184, 0.08);
+
+	/* Fonts */
+	--font-display: 'Space Grotesk', system-ui, sans-serif;
+	--font-body: 'Inter', system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+@theme inline {
+	--color-bg-base: var(--color-bg-base);
+	--color-bg-surface: var(--color-bg-surface);
+	--color-bg-elevated: var(--color-bg-elevated);
+	--color-bg-inset: var(--color-bg-inset);
+
+	--color-text-primary: var(--color-text-primary);
+	--color-text-secondary: var(--color-text-secondary);
+	--color-text-muted: var(--color-text-muted);
+
+	--color-indigo: var(--color-indigo);
+	--color-indigo-dim: var(--color-indigo-dim);
+	--color-indigo-bright: var(--color-indigo-bright);
+
+	--color-emerald: var(--color-emerald);
+	--color-emerald-bright: var(--color-emerald-bright);
+	--color-emerald-dim: var(--color-emerald-dim);
+
+	--color-amber: var(--color-amber);
+	--color-amber-bright: var(--color-amber-bright);
+
+	--color-rose: var(--color-rose);
+	--color-rose-dim: var(--color-rose-dim);
+
+	--font-display: var(--font-display);
+	--font-body: var(--font-body);
+	--font-mono: var(--font-mono);
+}
+
+html {
+	font-family: 'Inter', system-ui, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	background-color: var(--color-bg-surface);
+	color: var(--color-text-primary);
+	font-family: var(--font-body);
+	margin: 0;
+	padding: 0;
 }
 
 * {
 	box-sizing: border-box;
 }
 
-body {
-	background-color: var(--color-bg-primary);
-	color: var(--color-text-primary);
-	margin: 0;
-	padding: 0;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-		'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+/* Dot grid texture */
+.geo-grid {
+	background-image: radial-gradient(circle, rgba(99, 102, 241, 0.15) 1px, transparent 1px);
+	background-size: 28px 28px;
 }
+
+/* Standard elevated card */
+.surface-panel {
+	background: var(--color-bg-elevated);
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 1rem;
+	box-shadow:
+		0 0 0 1px rgba(99, 102, 241, 0.05),
+		0 4px 24px rgba(0, 0, 0, 0.4),
+		inset 0 1px 0 rgba(255, 255, 255, 0.04);
+	transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.surface-panel:hover {
+	border-color: var(--color-border-default);
+	box-shadow:
+		0 0 0 1px rgba(99, 102, 241, 0.10),
+		0 8px 32px rgba(99, 102, 241, 0.12),
+		inset 0 1px 0 rgba(255, 255, 255, 0.05);
+	transform: translateY(-2px);
+}
+
+/* SVG visualization container */
+.glow-panel {
+	background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.07) 0%, var(--color-bg-inset) 70%);
+	border: 1px solid var(--color-border-default);
+	border-radius: 1rem;
+	box-shadow: inset 0 0 40px rgba(99, 102, 241, 0.05);
+}
+
+/* KaTeX / formula block */
+.formula-panel {
+	background: linear-gradient(135deg, rgba(120, 53, 15, 0.22) 0%, rgba(69, 26, 3, 0.14) 100%);
+	border: 1px solid rgba(251, 191, 36, 0.18);
+	border-radius: 0.75rem;
+	padding: 1rem 1.25rem;
+}
+
+/* Calculated result chip */
+.result-chip {
+	display: inline-flex;
+	flex-direction: column;
+	background: rgba(6, 78, 59, 0.25);
+	border: 1px solid rgba(52, 211, 153, 0.22);
+	border-radius: 0.5rem;
+	padding: 0.5rem 0.875rem;
+}
+
+/* Uppercase eyebrow label */
+.micro-label {
+	font-family: var(--font-body);
+	font-size: 0.6875rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--color-indigo);
+}
+
+/* SVG shape glow */
+.shape-glow {
+	filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.55))
+		drop-shadow(0 0 2px rgba(199, 210, 254, 0.35));
+}
+
+/* Keyframes */
+@keyframes fadeSlideUp {
+	from { opacity: 0; transform: translateY(6px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+.animate-fade-slide-up { animation: fadeSlideUp 0.2s ease-out both; }
+.animate-fade-in { animation: fadeIn 0.3s ease-out both; }
 
 /* Smooth transitions for interactive elements */
 .transition-smooth {
 	transition: all 0.3s ease-in-out;
-}
-
-/* Neon glow effects */
-.glow-blue {
-	box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-}
-
-.glow-cyan {
-	box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
-}
-
-.glow-violet {
-	box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
 }
 
 /* Custom scrollbar for dark theme */
@@ -55,14 +194,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-	background: var(--color-bg-primary);
+	background: var(--color-bg-base);
 }
 
 ::-webkit-scrollbar-thumb {
-	background: var(--color-bg-secondary);
+	background: var(--color-bg-elevated);
 	border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--color-accent-blue);
+	background: var(--color-indigo-mid);
 }

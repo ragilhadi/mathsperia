@@ -1,3 +1,13 @@
-# allow crawling everything by default
 User-agent: *
-Disallow:
+Allow: /
+
+# Core pages
+Allow: /2d
+Allow: /3d
+Allow: /formulas
+
+# Sitemap
+Sitemap: https://mathsperia.web.id/sitemap.xml
+
+# Crawl-delay (optional, helpful for bots)
+Crawl-delay: 1

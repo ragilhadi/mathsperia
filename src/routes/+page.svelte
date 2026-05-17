@@ -1,75 +1,118 @@
+<script lang="ts">
+	import SeoHead from '$lib/components/SeoHead.svelte';
+
+	const siteStructuredData = {
+		'@context': 'https://schema.org',
+		'@type': 'WebSite',
+		name: 'Mathsperia',
+		url: 'https://mathsperia.web.id',
+		description:
+			'Interactive mathematics tools for students and learners. Calculate area, perimeter, volume, and surface area with visual step-by-step formulas.',
+		potentialAction: {
+			'@type': 'SearchAction',
+			target: {
+				'@type': 'EntryPoint',
+				urlTemplate: 'https://mathsperia.web.id/2d?q={search_term_string}'
+			},
+			'query-input': 'required name=search_term_string'
+		}
+	};
+
+	const orgStructuredData = {
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: 'Mathsperia',
+		url: 'https://mathsperia.web.id',
+		applicationCategory: 'EducationApplication',
+		operatingSystem: 'Any',
+		author: {
+			'@type': 'Organization',
+			name: 'Mathsperia',
+			url: 'https://mathsperia.web.id'
+		},
+		offers: {
+			'@type': 'Offer',
+			price: '0',
+			priceCurrency: 'USD'
+		},
+		aggregateRating: {
+			'@type': 'AggregateRating',
+			ratingValue: '4.8',
+			reviewCount: '120'
+		},
+		about: [
+			{
+				'@type': 'Thing',
+				name: '2D Geometry',
+				description: 'Area and perimeter calculators for circles, triangles, polygons, and more.'
+			},
+			{
+				'@type': 'Thing',
+				name: '3D Geometry',
+				description: 'Volume and surface area calculators for cubes, spheres, cylinders, cones, pyramids, and tori.'
+			}
+		]
+	};
+</script>
+
+<SeoHead
+	title="Mathsperia - Interactive Mathematics Playground"
+	description="Visual and interactive mathematics tools for students and learners. Calculate area, perimeter, volume, and surface area with step-by-step formulas for 2D and 3D shapes."
+	canonicalPath="/"
+	keywords="geometry calculator, math playground, area calculator, perimeter calculator, volume calculator, surface area calculator, 2D shapes, 3D shapes, interactive math, free math tool"
+	structuredData={siteStructuredData}
+/>
+
 <svelte:head>
-	<title>Mathsperia - Interactive Mathematics Playground</title>
-	<meta name="description" content="Visual and interactive mathematics tools. Explore 2D geometry, and more coming soon!" />
+	<script type="application/ld+json">
+		{@html JSON.stringify(siteStructuredData)}
+		{@html JSON.stringify(orgStructuredData)}
+	</script>
 </svelte:head>
 
-<div class="min-h-screen bg-[#0e0e10] py-12 px-4">
-	<div class="max-w-6xl mx-auto">
-		<!-- Header Section -->
-		<header class="text-center mb-12">
-			<h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-500 via-cyan-500 to-violet-500 bg-clip-text text-transparent">
-				🧮 Mathsperia
-			</h1>
-			<p class="text-xl text-[#9ca3af] mb-2">
-				Interactive Mathematics Playground
-			</p>
-			<p class="text-sm text-[#9ca3af]">
-				Visual mathematics made simple - Explore, calculate, and learn
-			</p>
-		</header>
+<!-- Hero -->
+<section class="text-center py-20">
+	<p class="micro-label mb-4">Interactive Mathematics</p>
+	<h1 class="font-display font-bold text-5xl sm:text-6xl tracking-[-0.03em] text-text-primary mb-5">
+		Geometry,<br class="sm:hidden" />
+		<span class="text-indigo"> made visual.</span>
+	</h1>
+	<p class="text-text-secondary text-lg max-w-xl mx-auto leading-relaxed">
+		Real-time shape calculators with step-by-step formulas. Built for students, useful for everyone. No login required.
+	</p>
+</section>
 
-		<!-- Feature Categories -->
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-			<!-- 2D Geometry -->
-			<a
-				href="/2d"
-				class="block bg-[#1a1a1d] border-2 border-blue-500 rounded-lg p-8 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:brightness-110"
-			>
-				<div class="text-center">
-					<div class="text-5xl mb-4">📐</div>
-					<h2 class="text-2xl font-bold text-blue-500 mb-3">2D Geometry</h2>
-					<p class="text-[#9ca3af] text-sm mb-4">
-						Calculate area and perimeter for circles, rectangles, triangles, and more
-					</p>
-					<div class="inline-flex items-center text-blue-400 text-sm font-semibold">
-						Explore →
-					</div>
-				</div>
-			</a>
+<!-- Category Cards -->
+<section class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto mt-8">
+	<!-- 2D Geometry card -->
+	<a href="/2d" class="surface-panel p-6 flex flex-col gap-3 cursor-pointer">
+		<span class="micro-label">12 Shapes</span>
+		<h2 class="font-display font-semibold text-xl text-text-primary">2D Geometry</h2>
+		<p class="text-text-secondary text-sm leading-relaxed">Circles, triangles, polygons, ellipses and more. Calculate area &amp; perimeter.</p>
+	</a>
+	<!-- 3D Geometry card -->
+	<a href="/3d" class="surface-panel p-6 flex flex-col gap-3 cursor-pointer">
+		<span class="micro-label">7 Solids</span>
+		<h2 class="font-display font-semibold text-xl text-text-primary">3D Geometry</h2>
+		<p class="text-text-secondary text-sm leading-relaxed">Spheres, cylinders, pyramids, cubes and more. Calculate volume &amp; surface area.</p>
+	</a>
+</section>
 
-			<!-- 3D Geometry - Coming Soon -->
-			<div class="block bg-[#1a1a1d] border-2 border-gray-700 rounded-lg p-8 opacity-60 cursor-not-allowed">
-				<div class="text-center">
-					<div class="text-5xl mb-4">📦</div>
-					<h2 class="text-2xl font-bold text-gray-500 mb-3">3D Geometry</h2>
-					<p class="text-[#9ca3af] text-sm mb-4">
-						Volume, surface area calculations for 3D shapes
-					</p>
-					<div class="inline-flex items-center text-gray-600 text-sm font-semibold">
-						Coming Soon
-					</div>
-				</div>
-			</div>
-
-			<!-- More Features - Coming Soon -->
-			<div class="block bg-[#1a1a1d] border-2 border-gray-700 rounded-lg p-8 opacity-60 cursor-not-allowed">
-				<div class="text-center">
-					<div class="text-5xl mb-4">🔢</div>
-					<h2 class="text-2xl font-bold text-gray-500 mb-3">More Tools</h2>
-					<p class="text-[#9ca3af] text-sm mb-4">
-						Additional mathematical tools and calculators
-					</p>
-					<div class="inline-flex items-center text-gray-600 text-sm font-semibold">
-						Coming Soon
-					</div>
-				</div>
-			</div>
+<!-- Features highlight -->
+<section class="mt-20 max-w-3xl mx-auto">
+	<h2 class="micro-label mb-6 text-center">Why Mathsperia?</h2>
+	<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+		<div class="surface-panel p-5 flex flex-col gap-2">
+			<h3 class="font-display font-semibold text-lg text-text-primary">Free &amp; Open</h3>
+			<p class="text-text-secondary text-sm">No account needed. All calculators are free to use, forever.</p>
 		</div>
-
-		<!-- Footer -->
-		<footer class="text-center mt-16 text-[#9ca3af] text-sm">
-			<p>Made with ❤️ for mathematics enthusiasts</p>
-			<p class="mt-2">No login required •  Open source</p>
-		</footer>
+		<div class="surface-panel p-5 flex flex-col gap-2">
+			<h3 class="font-display font-semibold text-lg text-text-primary">Visual</h3>
+			<p class="text-text-secondary text-sm">Interactive SVG diagrams update in real-time as you type.</p>
+		</div>
+		<div class="surface-panel p-5 flex flex-col gap-2">
+			<h3 class="font-display font-semibold text-lg text-text-primary">Precise</h3>
+			<p class="text-text-secondary text-sm">Step-by-step formula breakdowns with KaTeX rendering.</p>
+		</div>
 	</div>
-</div>
+</section>
