@@ -12,20 +12,55 @@
 	import { getLastUnit, areaUnitLabel, volumeUnitLabel, type Unit } from '$lib/utils/units';
 	import SeoHead from '$lib/components/SeoHead.svelte';
 	import { mathSolverData } from '$lib/utils/seo';
+	import { tKey } from '$lib/stores/lang.svelte';
+	import SliderInput from '$lib/components/SliderInput.svelte';
+	import CalculationHistory from '$lib/components/CalculationHistory.svelte';
+	import CopyLinkButton from '$lib/components/CopyLinkButton.svelte';
+	import DownloadPngButton from '$lib/components/DownloadPngButton.svelte';
+	import { addToHistory } from '$lib/utils/history';
+
+	import StepByStep from '$lib/components/StepByStep.svelte';
+	import SafeDisplay from '$lib/components/SafeDisplay.svelte';
+	import { convertValue, convertAreaValue, convertVolumeValue } from '$lib/utils/units';
+	import { safeNumber } from '$lib/utils/format';
 
 	const pageData = mathSolverData({
 		shape: 'Rectangular Prism',
 		urlPath: '/3d/rectangular-prism',
 		category: '3D',
 		resultType: 'volume and surface area',
-		keywords: 'rectangular prism volume calculator, rectangular prism surface area, cuboid math, box volume'
+		keywords:
+			'rectangular prism volume calculator, rectangular prism surface area, cuboid math, box volume'
 	});
 
 	let length = $state(5);
 	let width = $state(4);
 	let height = $state(3);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateRectangularPrism>>(calculateRectangularPrism(5, 4, 3));
+	let result = $state<ReturnType<typeof calculateRectangularPrism>>(
+		calculateRectangularPrism(5, 4, 3)
+	);
+	const BASE_UNIT: Unit = 'cm';
+
+	let displayVolume = $derived(safeNumber(convertVolumeValue(result.volume, BASE_UNIT, unit), 0));
+	let displayArea = $derived(safeNumber(convertAreaValue(result.area, BASE_UNIT, unit), 0));
+
+	let volumeSteps = $derived([
+		`V = l \\times w \\times h`,
+		`V = \\text{${formatNumber(length)}} \\times \\text{${formatNumber(width)}} \\times \\text{${formatNumber(height)}}`,
+		`V \\approx \\text{${formatNumber(displayVolume)}} \\text{ ${unit}}^3`
+	]);
+	let evaluatedVolume = $derived(
+		`V = \\text{${formatNumber(length)}} \\times \\text{${formatNumber(width)}} \\times \\text{${formatNumber(height)}} = \\text{${formatNumber(displayVolume)}} \\text{ ${unit}}^3`
+	);
+	let evaluatedArea = $derived(
+		`A = 2(\\text{${formatNumber(length)}} \\cdot \\text{${formatNumber(width)}} + \\text{${formatNumber(length)}} \\cdot \\text{${formatNumber(height)}} + \\text{${formatNumber(width)}} \\cdot \\text{${formatNumber(height)}}) = \\text{${formatNumber(displayArea)}} \\text{ ${unit}}^2`
+	);
+
+	let areaSteps = $derived([
+		`A = 2(lw + lh + wh)`,
+		`A \\approx \\text{${formatNumber(displayArea)}} \\text{ ${unit}}^2`
+	]);
 
 	function iso(x: number, y: number, z: number, s: number) {
 		return {
@@ -46,15 +81,14 @@
 	let v6 = $derived(iso(length, width, height, scale));
 	let v7 = $derived(iso(0, width, height, scale));
 
-	let evaluatedVolume = $derived(
-		`V = \\text{${formatNumber(length)}} \\times \\text{${formatNumber(width)}} \\times \\text{${formatNumber(height)}} = \\text{${formatNumber(result.volume)}} \\text{ ${unit}}^3`
-	);
-	let evaluatedArea = $derived(
-		`A = 2(\\text{${formatNumber(length)}}\\cdot\\text{${formatNumber(width)}} + \\text{${formatNumber(length)}}\\cdot\\text{${formatNumber(height)}} + \\text{${formatNumber(width)}}\\cdot\\text{${formatNumber(height)}}) = \\text{${formatNumber(result.area)}} \\text{ ${unit}}^2`
-	);
-
 	function handleCalculate() {
 		result = calculateRectangularPrism(length, width, height);
+		addToHistory('rectangular-prism', {
+			inputs: `l=${length}, w=${width}, h=${height}`,
+			results: `V=${formatNumber(result.volume)}, A=${formatNumber(result.area)}`,
+			unit,
+			timestamp: Date.now()
+		});
 	}
 
 	function handleReset() {
@@ -74,6 +108,14 @@
 		const newUrl = `?${params.toString()}`;
 		if (newUrl !== window.location.search && newUrl !== '?') {
 			history.replaceState(history.state, '', newUrl);
+		}
+	}
+
+	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
+		if (oldUnit !== newUnit) {
+			length = convertValue(length, oldUnit, newUnit);
+			width = convertValue(width, oldUnit, newUnit);
+			height = convertValue(height, oldUnit, newUnit);
 		}
 	}
 
@@ -102,7 +144,15 @@
 			if (!isNaN(val) && val > 0) height = val;
 		}
 		const u = sp.get('unit') as Unit | null;
-		if (u === 'mm' || u === 'cm' || u === 'm' || u === 'km' || u === 'in' || u === 'ft' || u === 'yd') {
+		if (
+			u === 'mm' ||
+			u === 'cm' ||
+			u === 'm' ||
+			u === 'km' ||
+			u === 'in' ||
+			u === 'ft' ||
+			u === 'yd'
+		) {
 			unit = u;
 		}
 		handleCalculate();
@@ -122,24 +172,42 @@
 	structuredData={pageData}
 />
 
-<Breadcrumb items={[
-	{ label: 'Home', href: '/' },
-	{ label: '3D Geometry', href: '/3d' },
-	{ label: 'Rectangular Prism' }
-]} />
+<Breadcrumb
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry3d'), href: '/3d' },
+		{ label: tKey('shapes.rectangular-prism.name') }
+	]}
+/>
 
 <BackButton href="/3d" />
 
 <div class="mb-8">
-	<p class="micro-label mb-2">3D Geometry</p>
-	<h1 class="font-display font-bold text-4xl tracking-tight text-text-primary">Rectangular Prism Calculator</h1>
-	<p class="text-text-secondary mt-2">Calculate volume and surface area of a rectangular prism.</p>
+	<p class="micro-label mb-2">{tKey('common.geometry3d')}</p>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('shapes.rectangular-prism.name')} {tKey('common.calculator')}
+	</h1>
+	<p class="mt-2 text-text-secondary">{tKey('shapes.rectangular-prism.desc')}</p>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+<div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
 	<!-- Left: Visualization -->
-	<div class="glow-panel aspect-square flex items-center justify-center p-8">
-		<svg viewBox="0 0 200 200" class="shape-glow w-full h-full max-w-xs">
+	<div class="glow-panel flex aspect-square items-center justify-center p-8">
+		<svg viewBox="0 0 200 200" class="shape-glow h-full w-full max-w-xs">
+			<!-- Top face (shaded) -->
+			<polygon
+				points={`${v4.x},${v4.y} ${v5.x},${v5.y} ${v6.x},${v6.y} ${v7.x},${v7.y}`}
+				fill="rgba(99,102,241,0.14)"
+				stroke="none"
+				opacity="0.85"
+			/>
+			<!-- Right face (shaded) -->
+			<polygon
+				points={`${v1.x},${v1.y} ${v2.x},${v2.y} ${v6.x},${v6.y} ${v5.x},${v5.y}`}
+				fill="rgba(99,102,241,0.08)"
+				stroke="none"
+				opacity="0.85"
+			/>
 			<!-- Bottom face -->
 			<line x1={v0.x} y1={v0.y} x2={v1.x} y2={v1.y} stroke="#818CF8" stroke-width="2" />
 			<line x1={v1.x} y1={v1.y} x2={v2.x} y2={v2.y} stroke="#818CF8" stroke-width="2" />
@@ -222,63 +290,45 @@
 	</div>
 
 	<!-- Right: Inputs + Formula + Results -->
-	<div class="surface-panel p-6 flex flex-col gap-6">
+	<div class="surface-panel flex flex-col gap-6 p-6">
 		<!-- Inputs -->
 		<div class="flex flex-col gap-4">
 			<div class="flex items-center justify-between">
-				<p class="micro-label">Dimensions</p>
-				<UnitSelector bind:unit />
+				<p class="micro-label">{tKey('common.dimensions')}</p>
+				<UnitSelector bind:unit onChange={handleUnitChange} />
 			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="length">Length (l)</label>
-				<div class="relative">
-					<input
-						id="length"
-						type="number"
-						min="0"
-						class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150"
-						placeholder="Enter a positive number"
-						bind:value={length}
-						onkeydown={handleKeyDown}
-					/>
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="width">Width (w)</label>
-				<div class="relative">
-					<input
-						id="width"
-						type="number"
-						min="0"
-						class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150"
-						placeholder="Enter a positive number"
-						bind:value={width}
-						onkeydown={handleKeyDown}
-					/>
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="height">Height (h)</label>
-				<div class="relative">
-					<input
-						id="height"
-						type="number"
-						min="0"
-						class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150"
-						placeholder="Enter a positive number"
-						bind:value={height}
-						onkeydown={handleKeyDown}
-					/>
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
+			<SliderInput
+				label={tKey('shapes.rectangular-prism.length')}
+				bind:value={length}
+				min={0}
+				max={50}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
+			<SliderInput
+				label={tKey('shapes.rectangular-prism.width')}
+				bind:value={width}
+				min={0}
+				max={50}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
+			<SliderInput
+				label={tKey('shapes.rectangular-prism.height')}
+				bind:value={height}
+				min={0}
+				max={50}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
 			<button
 				onclick={handleReset}
-				class="w-full px-4 py-2.5 bg-bg-inset border border-border-default rounded-lg text-text-secondary hover:text-text-primary hover:border-border-strong transition-colors duration-150 font-mono text-sm"
+				class="border-border-default hover:border-border-strong w-full rounded-lg border bg-bg-inset px-4 py-2.5 font-mono text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
 			>
-				Reset
+				{tKey('common.reset')}
 			</button>
 		</div>
 
@@ -286,34 +336,42 @@
 
 		<!-- Formula -->
 		<div>
-			<p class="micro-label mb-3">Formulas</p>
+			<p class="micro-label mb-3">{tKey('common.formulas')}</p>
 			<FormulaDisplay template={result.formulas.volume} evaluated={evaluatedVolume} />
-			<div class="mt-3"></div>
+			<StepByStep steps={volumeSteps} />
+			<div class="mt-4"></div>
 			<FormulaDisplay template={result.formulas.area} evaluated={evaluatedArea} />
+			<StepByStep steps={areaSteps} />
 		</div>
 
 		<hr class="border-border-divider" />
 
 		<!-- Results -->
 		<div>
-			<p class="micro-label mb-3">Results</p>
+			<p class="micro-label mb-3">{tKey('common.results')}</p>
 			<div class="flex flex-wrap gap-3">
 				<div class="result-chip animate-fade-slide-up">
-					<span class="micro-label text-text-muted">Volume</span>
-					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
-						{formatNumber(result.volume)} <span class="text-sm text-emerald/70">{volumeUnitLabel(unit)}</span>
+					<span class="micro-label text-text-muted">{tKey('common.volume')}</span>
+					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
+						<SafeDisplay value={displayVolume} unit={volumeUnitLabel(unit)} />
 					</span>
 				</div>
 				<div class="result-chip animate-fade-slide-up" style="animation-delay: 50ms">
-					<span class="micro-label text-text-muted">Surface Area</span>
-					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
-						{formatNumber(result.area)} <span class="text-sm text-emerald/70">{areaUnitLabel(unit)}</span>
+					<span class="micro-label text-text-muted">{tKey('common.surfaceArea')}</span>
+					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
+						<SafeDisplay value={displayArea} unit={areaUnitLabel(unit)} />
 					</span>
+				</div>
+				<div class="mt-3 flex items-center gap-2">
+					<CopyLinkButton />
+					<DownloadPngButton />
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<CalculationHistory shapeId="rectangular-prism" />
 
 <ShapeFacts shapeId="rectangular-prism" />
 <ShapeProperties shapeId="rectangular-prism" />

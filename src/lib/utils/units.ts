@@ -94,3 +94,33 @@ export function areaUnitLabel(unit: Unit): string {
 export function volumeUnitLabel(unit: Unit): string {
 	return `${unit}\u00B3`;
 }
+
+// ── Area \u0026 Volume Conversions ────────────────────────────────
+
+/**
+ * Convert a linear dimension value from one unit to another
+ */
+export function convertValue(value: number, fromUnit: Unit, toUnit: Unit): number {
+	if (fromUnit === toUnit) return value;
+	return convert(value, fromUnit, toUnit);
+}
+
+/**
+ * Convert an area value from one unit to another
+ * (area scales with the square of linear conversion)
+ */
+export function convertAreaValue(value: number, fromUnit: Unit, toUnit: Unit): number {
+	if (fromUnit === toUnit) return value;
+	const linearFactor = TO_CM[fromUnit] / TO_CM[toUnit];
+	return value * linearFactor * linearFactor;
+}
+
+/**
+ * Convert a volume value from one unit to another
+ * (volume scales with the cube of linear conversion)
+ */
+export function convertVolumeValue(value: number, fromUnit: Unit, toUnit: Unit): number {
+	if (fromUnit === toUnit) return value;
+	const linearFactor = TO_CM[fromUnit] / TO_CM[toUnit];
+	return value * linearFactor * linearFactor * linearFactor;
+}

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import katex from 'katex';
 
 	interface Props {
@@ -9,46 +7,31 @@
 	}
 
 	let { template, evaluated }: Props = $props();
-	let templateElement: HTMLDivElement | undefined = $state(undefined);
-	let evaluatedElement: HTMLDivElement | undefined = $state(undefined);
 
-	function renderKatex(element: HTMLDivElement | undefined, formula: string) {
-		if (browser && element && formula) {
-			try {
-				katex.render(formula, element, {
-					throwOnError: false,
-					displayMode: true
-				});
-			} catch (error) {
-				console.error('KaTeX rendering error:', error);
-				element.textContent = formula;
-			}
+	function render(formula: string): string {
+		try {
+			return katex.renderToString(formula, {
+				throwOnError: false,
+				displayMode: true
+			});
+		} catch {
+			return formula;
 		}
 	}
 
-	onMount(() => {
-		renderKatex(templateElement, template);
-		renderKatex(evaluatedElement, evaluated);
-	});
-
-	$effect(() => {
-		renderKatex(templateElement, template);
-		renderKatex(evaluatedElement, evaluated);
-	});
+	let templateHtml = $derived(render(template));
+	let evaluatedHtml = $derived(render(evaluated));
 </script>
 
 <div class="formula-panel flex flex-col gap-3">
-	<!-- Template -->
 	<div>
 		<p class="micro-label mb-1.5" style="color: rgba(252, 211, 77, 0.6)">Template</p>
-		<div bind:this={templateElement} class="katex-template"></div>
+		<div class="katex-template">{@html templateHtml}</div>
 	</div>
-	<!-- Divider -->
 	<hr class="border-border-divider" />
-	<!-- Evaluated -->
 	<div>
 		<p class="micro-label mb-1.5" style="color: rgba(252, 211, 77, 0.6)">Calculation</p>
-		<div bind:this={evaluatedElement} class="katex-evaluated font-mono text-amber"></div>
+		<div class="katex-evaluated font-mono text-amber">{@html evaluatedHtml}</div>
 	</div>
 </div>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SeoHead from '$lib/components/SeoHead.svelte';
+	import { tKey } from '$lib/stores/lang.svelte';
 
 	const siteStructuredData = {
 		'@context': 'https://schema.org',
@@ -49,7 +50,8 @@
 			{
 				'@type': 'Thing',
 				name: '3D Geometry',
-				description: 'Volume and surface area calculators for cubes, spheres, cylinders, cones, pyramids, and tori.'
+				description:
+					'Volume and surface area calculators for cubes, spheres, cylinders, cones, pyramids, and tori.'
 			}
 		]
 	};
@@ -64,55 +66,106 @@
 />
 
 <svelte:head>
-	<script type="application/ld+json">
-		{@html JSON.stringify(siteStructuredData)}
-		{@html JSON.stringify(orgStructuredData)}
-	</script>
+	{@html `\u003cscript type="application/ld+json"\u003e${JSON.stringify(siteStructuredData)}\u003c/script\u003e`}
+	{@html `\u003cscript type="application/ld+json"\u003e${JSON.stringify(orgStructuredData)}\u003c/script\u003e`}
 </svelte:head>
 
 <!-- Hero -->
-<section class="text-center py-20">
-	<p class="micro-label mb-4">Interactive Mathematics</p>
-	<h1 class="font-display font-bold text-5xl sm:text-6xl tracking-[-0.03em] text-text-primary mb-5">
-		Geometry,<br class="sm:hidden" />
-		<span class="text-indigo"> made visual.</span>
+<section class="py-20 text-center">
+	<p class="micro-label mb-4">{tKey('home.tagline')}</p>
+	<h1 class="mb-5 font-display text-5xl font-bold tracking-[-0.03em] text-text-primary sm:text-6xl">
+		{tKey('home.heroTitle1')}<br class="sm:hidden" />
+		<span class="text-indigo"> {tKey('home.heroTitle2')}</span>
 	</h1>
-	<p class="text-text-secondary text-lg max-w-xl mx-auto leading-relaxed">
-		Real-time shape calculators with step-by-step formulas. Built for students, useful for everyone. No login required.
+	<p class="mx-auto max-w-xl text-lg leading-relaxed text-text-secondary">
+		{tKey('home.heroDesc')}
 	</p>
 </section>
 
 <!-- Category Cards -->
-<section class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto mt-8">
+<section class="mx-auto mt-8 grid max-w-2xl grid-cols-1 gap-5 sm:grid-cols-2">
 	<!-- 2D Geometry card -->
-	<a href="/2d" class="surface-panel p-6 flex flex-col gap-3 cursor-pointer">
-		<span class="micro-label">12 Shapes</span>
-		<h2 class="font-display font-semibold text-xl text-text-primary">2D Geometry</h2>
-		<p class="text-text-secondary text-sm leading-relaxed">Circles, triangles, polygons, ellipses and more. Calculate area &amp; perimeter.</p>
+	<a href="/2d" class="surface-panel flex cursor-pointer flex-col gap-3 p-6">
+		<span class="micro-label">{tKey('home.shapes2dCount')}</span>
+		<h2 class="font-display text-xl font-semibold text-text-primary">{tKey('home.shapes2dTitle')}</h2>
+		<p class="text-sm leading-relaxed text-text-secondary">
+			{tKey('home.shapes2dDesc')}
+		</p>
 	</a>
 	<!-- 3D Geometry card -->
-	<a href="/3d" class="surface-panel p-6 flex flex-col gap-3 cursor-pointer">
-		<span class="micro-label">7 Solids</span>
-		<h2 class="font-display font-semibold text-xl text-text-primary">3D Geometry</h2>
-		<p class="text-text-secondary text-sm leading-relaxed">Spheres, cylinders, pyramids, cubes and more. Calculate volume &amp; surface area.</p>
+	<a href="/3d" class="surface-panel flex cursor-pointer flex-col gap-3 p-6">
+		<span class="micro-label">{tKey('home.shapes3dCount')}</span>
+		<h2 class="font-display text-xl font-semibold text-text-primary">{tKey('home.shapes3dTitle')}</h2>
+		<p class="text-sm leading-relaxed text-text-secondary">
+			{tKey('home.shapes3dDesc')}
+		</p>
 	</a>
 </section>
 
+<!-- Tools & Resources -->
+<section class="mx-auto mt-10 max-w-3xl">
+	<h2 class="micro-label mb-6 text-center">{tKey('home.toolsTitle')}</h2>
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+		<a href="/tools" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.coordToolsTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.coordToolsDesc')}
+			</p>
+		</a>
+		<a href="/tools/trig" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.trigTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.trigDesc')}
+			</p>
+		</a>
+		<a href="/tools/convert" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.convertTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.convertDesc')}
+			</p>
+		</a>
+		<a href="/quiz" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.quizTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.quizDesc')}
+			</p>
+		</a>
+		<a href="/formulas" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.formulasTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.formulasDesc')}
+			</p>
+		</a>
+		<a href="/glossary" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.glossaryTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.glossaryDesc')}
+			</p>
+		</a>
+	</div>
+</section>
+
 <!-- Features highlight -->
-<section class="mt-20 max-w-3xl mx-auto">
-	<h2 class="micro-label mb-6 text-center">Why Mathsperia?</h2>
-	<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-		<div class="surface-panel p-5 flex flex-col gap-2">
-			<h3 class="font-display font-semibold text-lg text-text-primary">Free &amp; Open</h3>
-			<p class="text-text-secondary text-sm">No account needed. All calculators are free to use, forever.</p>
+<section class="mx-auto mt-20 max-w-3xl">
+	<h2 class="micro-label mb-6 text-center">{tKey('home.whyTitle')}</h2>
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+		<div class="surface-panel flex flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.freeTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.freeDesc')}
+			</p>
 		</div>
-		<div class="surface-panel p-5 flex flex-col gap-2">
-			<h3 class="font-display font-semibold text-lg text-text-primary">Visual</h3>
-			<p class="text-text-secondary text-sm">Interactive SVG diagrams update in real-time as you type.</p>
+		<div class="surface-panel flex flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.visualTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.visualDesc')}
+			</p>
 		</div>
-		<div class="surface-panel p-5 flex flex-col gap-2">
-			<h3 class="font-display font-semibold text-lg text-text-primary">Precise</h3>
-			<p class="text-text-secondary text-sm">Step-by-step formula breakdowns with KaTeX rendering.</p>
+		<div class="surface-panel flex flex-col gap-2 p-5">
+			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.preciseTitle')}</h3>
+			<p class="text-sm text-text-secondary">
+				{tKey('home.preciseDesc')}
+			</p>
 		</div>
 	</div>
 </section>

@@ -24,8 +24,8 @@ export function mathSolverData(props: MathSolverProps): Record<string, unknown> 
 			'@type': 'SolveMathAction',
 			target: { '@type': 'EntryPoint', urlTemplate: `https://mathsperia.web.id${urlPath}` },
 			'mathExpression-input': 'required',
-			'eduQuestionType': 'Geometry',
-			'about': {
+			eduQuestionType: 'Geometry',
+			about: {
 				'@type': 'Thing',
 				name: shape,
 				category: `${category} Geometry`
@@ -38,8 +38,10 @@ export function mathSolverData(props: MathSolverProps): Record<string, unknown> 
 			category: `${category} Geometry`
 		},
 		isAccessibleForFree: true,
-		'eduLevel': ['HighSchool', 'Undergraduate', 'K-12'],
-		keywords: keywords || `${shape}, ${category.toLowerCase()} geometry calculator, area, perimeter, volume, surface area, math solver, step by step`
+		eduLevel: ['HighSchool', 'Undergraduate', 'K-12'],
+		keywords:
+			keywords ||
+			`${shape}, ${category.toLowerCase()} geometry calculator, area, perimeter, volume, surface area, math solver, step by step`
 	};
 }
 

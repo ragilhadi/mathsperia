@@ -10,7 +10,10 @@
 			{ label: 'Vertices', value: '0' },
 			{ label: 'Angles', value: '360° internally' },
 			{ label: 'Symmetry', value: 'Infinite lines of symmetry' },
-			{ label: 'Special cases', value: 'A circle is the shape with the largest area for a given perimeter' },
+			{
+				label: 'Special cases',
+				value: 'A circle is the shape with the largest area for a given perimeter'
+			},
 			{ label: 'Real-world', value: 'Wheels, pizza, planets, coins' }
 		],
 		rectangle: [
@@ -18,7 +21,10 @@
 			{ label: 'Vertices', value: '4' },
 			{ label: 'Angles', value: '4 right angles (90° each)' },
 			{ label: 'Symmetry', value: '2 lines of symmetry' },
-			{ label: 'Special cases', value: 'A square is a special rectangle where all sides are equal' },
+			{
+				label: 'Special cases',
+				value: 'A square is a special rectangle where all sides are equal'
+			},
 			{ label: 'Real-world', value: 'Books, doors, screens, football fields' }
 		],
 		square: [
@@ -34,7 +40,10 @@
 			{ label: 'Vertices', value: '4' },
 			{ label: 'Angles', value: 'Sum = 360°' },
 			{ label: 'Symmetry', value: '1 line if isosceles; none if scalene' },
-			{ label: 'Special cases', value: 'A parallelogram is a trapezoid with two pairs of parallel sides' },
+			{
+				label: 'Special cases',
+				value: 'A parallelogram is a trapezoid with two pairs of parallel sides'
+			},
 			{ label: 'Real-world', value: 'Roofs, handbags, bridges' }
 		],
 		parallelogram: [
@@ -107,7 +116,7 @@
 			{ label: 'Vertices', value: '8' },
 			{ label: 'Symmetry', value: '9 planes, 13 axes of rotation' },
 			{ label: 'Special cases', value: 'A cube is the only regular hexahedron' },
-			{ label: 'Real-world', value: 'Dice, Rubik\'s cube, sugar cubes, ice cubes' }
+			{ label: 'Real-world', value: "Dice, Rubik's cube, sugar cubes, ice cubes" }
 		],
 		'rectangular-prism': [
 			{ label: 'Faces', value: '6 (rectangles)' },
@@ -165,14 +174,16 @@
 </script>
 
 {#if shapeProps.length > 0}
-	<div class="mt-6 surface-panel p-4">
+	<div class="surface-panel mt-6 p-4">
 		<button
 			onclick={() => (isOpen = !isOpen)}
-			class="w-full flex items-center justify-between text-left group"
+			class="group flex w-full cursor-pointer items-center justify-between text-left"
 		>
 			<p class="micro-label">Properties & Facts</p>
 			<svg
-				class="w-4 h-4 text-text-muted transition-transform duration-200 {isOpen ? 'rotate-180' : ''}"
+				class="h-4 w-4 text-text-muted transition-transform duration-200 {isOpen
+					? 'rotate-180'
+					: ''}"
 				viewBox="0 0 24 24"
 				fill="none"
 				stroke="currentColor"
@@ -185,11 +196,11 @@
 		</button>
 
 		{#if isOpen}
-			<div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 animate-fade-slide-up">
+			<div class="animate-fade-slide-up mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
 				{#each shapeProps as prop}
-					<div class="bg-bg-inset/50 rounded-lg p-3 border border-border-subtle">
-						<p class="text-text-muted text-xs font-medium mb-0.5">{prop.label}</p>
-						<p class="text-text-secondary text-sm leading-relaxed">{prop.value}</p>
+					<div class="border-border-subtle rounded-lg border bg-bg-inset/50 p-3">
+						<p class="mb-0.5 text-xs font-medium text-text-muted">{prop.label}</p>
+						<p class="text-sm leading-relaxed text-text-secondary">{prop.value}</p>
 					</div>
 				{/each}
 			</div>
