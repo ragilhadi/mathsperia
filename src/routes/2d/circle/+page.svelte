@@ -7,40 +7,85 @@
 	import UnitSelector from '$lib/components/UnitSelector.svelte';
 	import ShapeFacts from '$lib/components/ShapeFacts.svelte';
 	import ShapeProperties from '$lib/components/ShapeProperties.svelte';
+	import StepByStep from '$lib/components/StepByStep.svelte';
+	import SafeDisplay from '$lib/components/SafeDisplay.svelte';
 	import { calculateCircle } from '$lib/utils/shapes';
-	import { formatNumber, clamp } from '$lib/utils/format';
-	import { getLastUnit, areaUnitLabel, type Unit } from '$lib/utils/units';
+	import { formatNumber, clamp, safeNumber } from '$lib/utils/format';
+	import {
+		getLastUnit,
+		areaUnitLabel,
+		convertValue,
+		convertAreaValue,
+		type Unit
+	} from '$lib/utils/units';
 	import SeoHead from '$lib/components/SeoHead.svelte';
 	import { mathSolverData } from '$lib/utils/seo';
+	import SliderInput from '$lib/components/SliderInput.svelte';
+	import CalculationHistory from '$lib/components/CalculationHistory.svelte';
+	import CopyLinkButton from '$lib/components/CopyLinkButton.svelte';
+	import DownloadPngButton from '$lib/components/DownloadPngButton.svelte';
+	import { addToHistory } from '$lib/utils/history';
+	import { tKey } from '$lib/stores/lang.svelte';
 
 	const pageData = mathSolverData({
 		shape: 'Circle',
 		urlPath: '/2d/circle',
 		category: '2D',
 		resultType: 'area and circumference',
-		keywords: 'circle area calculator, circle circumference calculator, radius, diameter, pi math tool'
+		keywords:
+			'circle area calculator, circle circumference calculator, radius, diameter, pi math tool'
 	});
 
 	let radius = $state(5);
 	let unit = $state<Unit>(getLastUnit());
 	let result = $state<ReturnType<typeof calculateCircle>>(calculateCircle(5));
 
+	const BASE_UNIT: Unit = 'cm';
+
+	let displayArea = $derived(safeNumber(convertAreaValue(result.area, BASE_UNIT, unit), 0));
+	let displayPerimeter = $derived(safeNumber(convertValue(result.perimeter, BASE_UNIT, unit), 0));
+
 	let svgRadius = $derived(clamp(radius * 8, 20, 80));
 
 	let evaluatedArea = $derived(
-		`A = \\pi \\times \\text{${formatNumber(radius)}}^2 \\approx \\text{${formatNumber(result.area)}} \\text{ ${unit}}^2`
+		`A = \\pi \\times \\text{${formatNumber(radius)}}^2 \\approx \\text{${formatNumber(displayArea)}} \\text{ ${unit}}^2`
 	);
 	let evaluatedPerimeter = $derived(
-		`C = 2\\pi \\times \\text{${formatNumber(radius)}} \\approx \\text{${formatNumber(result.perimeter)}} \\text{ ${unit}}`
+		`C = 2\\pi \\times \\text{${formatNumber(radius)}} \\approx \\text{${formatNumber(displayPerimeter)}} \\text{ ${unit}}`
 	);
 
+	let areaSteps = $derived([
+		`A = \\pi r^2`,
+		`A = \\pi \\times \\text{${formatNumber(radius)}}^2`,
+		`A \\approx \\text{${formatNumber(displayArea)}} \\text{ ${unit}}^2`
+	]);
+
+	let perimeterSteps = $derived([
+		`C = 2\\pi r`,
+		`C = 2\\pi \\times \\text{${formatNumber(radius)}}`,
+		`C \\approx \\text{${formatNumber(displayPerimeter)}} \\text{ ${unit}}`
+	]);
+
 	function handleCalculate() {
+		if (radius <= 0) radius = 0.1;
 		result = calculateCircle(radius);
+		addToHistory('circle', {
+			inputs: `r=${formatNumber(radius)}`,
+			results: `A=${formatNumber(result.area)}, C=${formatNumber(result.perimeter)}`,
+			unit,
+			timestamp: Date.now()
+		});
 	}
 
 	function handleReset() {
 		radius = 5;
 		result = calculateCircle(radius);
+	}
+
+	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
+		if (oldUnit !== newUnit) {
+			radius = convertValue(radius, oldUnit, newUnit);
+		}
 	}
 
 	function updateUrl() {
@@ -69,7 +114,15 @@
 			if (!isNaN(val) && val > 0) radius = val;
 		}
 		const u = sp.get('unit') as Unit | null;
-		if (u === 'mm' || u === 'cm' || u === 'm' || u === 'km' || u === 'in' || u === 'ft' || u === 'yd') {
+		if (
+			u === 'mm' ||
+			u === 'cm' ||
+			u === 'm' ||
+			u === 'km' ||
+			u === 'in' ||
+			u === 'ft' ||
+			u === 'yd'
+		) {
 			unit = u;
 		}
 		handleCalculate();
@@ -89,24 +142,24 @@
 	structuredData={pageData}
 />
 
-<Breadcrumb items={[
-	{ label: 'Home', href: '/' },
-	{ label: '2D Geometry', href: '/2d' },
-	{ label: 'Circle' }
-]} />
+<Breadcrumb
+	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry2d'), href: '/2d' }, { label: tKey('shapes.circle.name') }]}
+/>
 
 <BackButton href="/2d" />
 
 <div class="mb-8">
-	<p class="micro-label mb-2">2D Geometry</p>
-	<h1 class="font-display font-bold text-4xl tracking-tight text-text-primary">Circle Calculator</h1>
-	<p class="text-text-secondary mt-2">Calculate area and circumference of a circle.</p>
+	<p class="micro-label mb-2">{tKey('common.geometry2d')}</p>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('shapes.circle.name')} Calculator
+	</h1>
+	<p class="mt-2 text-text-secondary">{tKey('shapes.circle.desc')}</p>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+<div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
 	<!-- Left: Visualization -->
-	<div class="glow-panel aspect-square flex items-center justify-center p-8">
-		<svg viewBox="0 0 200 200" class="shape-glow w-full h-full max-w-xs">
+	<div class="glow-panel flex aspect-square items-center justify-center p-8">
+		<svg viewBox="0 0 200 200" class="shape-glow h-full w-full max-w-xs">
 			<circle
 				cx="100"
 				cy="100"
@@ -116,85 +169,90 @@
 				stroke-width="2"
 			/>
 			<line
-				x1="100" y1="100"
-				x2={100 + svgRadius} y2="100"
+				x1="100"
+				y1="100"
+				x2={100 + svgRadius}
+				y2="100"
 				stroke="rgba(148, 163, 184, 0.4)"
 				stroke-width="1"
 				stroke-dasharray="4 3"
 			/>
 			<circle cx="100" cy="100" r="3" fill="#818CF8" />
-			<text x={100 + (svgRadius / 2)} y="92" font-family="JetBrains Mono" font-size="11" fill="#475569" text-anchor="middle">
+			<text
+				x={100 + svgRadius / 2}
+				y="92"
+				font-family="JetBrains Mono"
+				font-size="11"
+				fill="#475569"
+				text-anchor="middle"
+			>
 				r = {formatNumber(radius)}
 			</text>
 		</svg>
 	</div>
 
 	<!-- Right: Inputs + Formula + Results -->
-	<div class="surface-panel p-6 flex flex-col gap-6">
+	<div class="surface-panel flex flex-col gap-6 p-6">
 		<!-- Inputs -->
 		<div class="flex flex-col gap-4">
 			<div class="flex items-center justify-between">
-				<p class="micro-label">Dimensions</p>
-				<UnitSelector bind:unit />
+				<p class="micro-label">{tKey('common.dimensions')}</p>
+				<UnitSelector bind:unit onChange={handleUnitChange} />
 			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="radius">Radius (r)</label>
-				<div class="relative">
-					<input
-						id="radius"
-						type="number"
-						min="0"
-						class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5
-								 font-mono text-text-primary placeholder:text-text-muted
-								 focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20
-								 transition-colors duration-150"
-						placeholder="Enter a positive number"
-						bind:value={radius}
-						onkeydown={handleKeyDown}
-					/>
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
+			<SliderInput
+				label={tKey('shapes.circle.radius') + ' (r)'}
+				bind:value={radius}
+				min={0}
+				max={100}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
 			<button
 				onclick={handleReset}
-				class="w-full px-4 py-2.5 bg-bg-inset border border-border-default rounded-lg
-						 text-text-secondary hover:text-text-primary hover:border-border-strong
-						 transition-colors duration-150 font-mono text-sm"
+				class="border-border-default hover:border-border-strong w-full rounded-lg border bg-bg-inset px-4 py-2.5 font-mono text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
+				>{tKey('common.reset')}</button
 			>
-				Reset
-			</button>
 		</div>
 
 		<hr class="border-border-divider" />
 
 		<!-- Formula -->
 		<div>
-			<p class="micro-label mb-3">Formulas</p>
+			<p class="micro-label mb-3">{tKey('common.formulas')}</p>
 			<FormulaDisplay template={result.formulas.area} evaluated={evaluatedArea} />
-			<div class="mt-3"></div>
+			<StepByStep steps={areaSteps} />
+			<div class="mt-4"></div>
 			<FormulaDisplay template={result.formulas.perimeter} evaluated={evaluatedPerimeter} />
+			<StepByStep steps={perimeterSteps} />
 		</div>
 
 		<hr class="border-border-divider" />
 
 		<!-- Results -->
 		<div>
-			<p class="micro-label mb-3">Results</p>
+			<p class="micro-label mb-3">{tKey('common.results')}</p>
 			<div class="flex flex-wrap gap-3">
 				<div class="result-chip animate-fade-slide-up">
-					<span class="micro-label text-text-muted">Area</span>
-					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
-						{formatNumber(result.area)} <span class="text-sm text-emerald/70">{areaUnitLabel(unit)}</span>
+					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
+					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
+						<SafeDisplay value={displayArea} unit={areaUnitLabel(unit)} />
 					</span>
 				</div>
 				<div class="result-chip animate-fade-slide-up" style="animation-delay: 50ms">
-					<span class="micro-label text-text-muted">Circumference</span>
-					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
-						{formatNumber(result.perimeter)} <span class="text-sm text-emerald/70">{unit}</span>
+					<span class="micro-label text-text-muted">{tKey('common.circumference')}</span>
+					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
+						<SafeDisplay value={displayPerimeter} {unit} />
 					</span>
 				</div>
 			</div>
+			<div class="mt-3 flex items-center gap-2">
+				<CopyLinkButton />
+				<DownloadPngButton />
+			</div>
 		</div>
+
+		<CalculationHistory shapeId="circle" />
 	</div>
 </div>
 

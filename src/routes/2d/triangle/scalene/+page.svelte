@@ -7,11 +7,25 @@
 	import UnitSelector from '$lib/components/UnitSelector.svelte';
 	import ShapeFacts from '$lib/components/ShapeFacts.svelte';
 	import ShapeProperties from '$lib/components/ShapeProperties.svelte';
+	import StepByStep from '$lib/components/StepByStep.svelte';
+	import SafeDisplay from '$lib/components/SafeDisplay.svelte';
 	import { calculateScaleneTriangle } from '$lib/utils/shapes';
-	import { formatNumber, clamp } from '$lib/utils/format';
-	import { getLastUnit, areaUnitLabel, type Unit } from '$lib/utils/units';
+	import { formatNumber, safeNumber } from '$lib/utils/format';
+	import {
+		getLastUnit,
+		areaUnitLabel,
+		convertValue,
+		convertAreaValue,
+		type Unit
+	} from '$lib/utils/units';
 	import SeoHead from '$lib/components/SeoHead.svelte';
 	import { mathSolverData } from '$lib/utils/seo';
+	import SliderInput from '$lib/components/SliderInput.svelte';
+	import CalculationHistory from '$lib/components/CalculationHistory.svelte';
+	import CopyLinkButton from '$lib/components/CopyLinkButton.svelte';
+	import DownloadPngButton from '$lib/components/DownloadPngButton.svelte';
+	import { addToHistory } from '$lib/utils/history';
+	import { tKey } from '$lib/stores/lang.svelte';
 
 	const pageData = mathSolverData({
 		shape: 'Scalene Triangle',
@@ -25,16 +39,23 @@
 	let sideB = $state(8);
 	let sideC = $state(10);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateScaleneTriangle>>(calculateScaleneTriangle(6, 8, 10));
+	let result = $state<ReturnType<typeof calculateScaleneTriangle>>(
+		calculateScaleneTriangle(6, 8, 10)
+	);
+
+	const BASE_UNIT: Unit = 'cm';
+
+	let displayArea = $derived(safeNumber(convertAreaValue(result.area, BASE_UNIT, unit), 0));
+	let displayPerimeter = $derived(safeNumber(convertValue(result.perimeter, BASE_UNIT, unit), 0));
 
 	let maxSide = $derived(Math.max(sideA, sideB, sideC));
 	let scaleFactor = $derived(maxSide / 8);
 
 	let evaluatedArea = $derived(
-		`A = \\sqrt{s(s-a)(s-b)(s-c)} \\approx \\text{${formatNumber(result.area)}} \\text{ ${unit}}^2`
+		`A = \\sqrt{s(s-a)(s-b)(s-c)} \\approx \\text{${formatNumber(displayArea)}} \\text{ ${unit}}^2`
 	);
 	let evaluatedPerimeter = $derived(
-		`P = \\text{${formatNumber(sideA)}} + \\text{${formatNumber(sideB)}} + \\text{${formatNumber(sideC)}} = \\text{${formatNumber(result.perimeter)}} \\text{ ${unit}}`
+		`P = \\text{${formatNumber(sideA)}} + \\text{${formatNumber(sideB)}} + \\text{${formatNumber(sideC)}} = \\text{${formatNumber(displayPerimeter)}} \\text{ ${unit}}`
 	);
 
 	const semiPerimeterFormula = 's = \\frac{a + b + c}{2}';
@@ -42,32 +63,75 @@
 		`s = \\frac{\\text{${formatNumber(sideA)}} + \\text{${formatNumber(sideB)}} + \\text{${formatNumber(sideC)}}}{2} = \\text{${formatNumber(result.perimeter / 2)}} \\text{ ${unit}}`
 	);
 
+	let semiPerimeterSteps = $derived([
+		`s = \\frac{a + b + c}{2}`,
+		`s = \\frac{\\text{${formatNumber(sideA)}} + \\text{${formatNumber(sideB)}} + \\text{${formatNumber(sideC)}}}{2}`,
+		`s = \\text{${formatNumber(result.perimeter / 2)}} \\text{ ${unit}}`
+	]);
+
+	let areaSteps = $derived([
+		`A = \\sqrt{s(s-a)(s-b)(s-c)}`,
+		`A = \\sqrt{\\text{${formatNumber(result.perimeter / 2)}}(\\text{${formatNumber(result.perimeter / 2 - sideA)}})(\\text{${formatNumber(result.perimeter / 2 - sideB)}})(\\text{${formatNumber(result.perimeter / 2 - sideC)}})}`,
+		`A \\approx \\text{${formatNumber(displayArea)}} \\text{ ${unit}}^2`
+	]);
+
+	let perimeterSteps = $derived([
+		`P = a + b + c`,
+		`P = \\text{${formatNumber(sideA)}} + \\text{${formatNumber(sideB)}} + \\text{${formatNumber(sideC)}}`,
+		`P = \\text{${formatNumber(displayPerimeter)}} \\text{ ${unit}}`
+	]);
+
 	let error = $state('');
+
+	function isValidTriangle(a: number, b: number, c: number): boolean {
+		return a + b > c && a + c > b && b + c > a;
+	}
+
+	function whichInequality(a: number, b: number, c: number): string {
+		if (a + b <= c) return 'Side A + Side B must be greater than Side C';
+		if (a + c <= b) return 'Side A + Side C must be greater than Side B';
+		if (b + c <= a) return 'Side B + Side C must be greater than Side A';
+		return '';
+	}
 
 	function handleCalculate() {
 		error = '';
-		if (sideA <= 0) sideA = 0.1;
-		if (sideB <= 0) sideB = 0.1;
-		if (sideC <= 0) sideC = 0.1;
-		if (sideA + sideB <= sideC) {
-			error = 'Triangle inequality violated: the sum of two sides must be greater than the third. Auto-correcting...';
-			sideC = (sideA + sideB) * 0.9;
+		if (sideA <= 0) {
+			sideA = 0.1;
 		}
-		if (sideA + sideC <= sideB) {
-			error = 'Triangle inequality violated: the sum of two sides must be greater than the third. Auto-correcting...';
-			sideB = (sideA + sideC) * 0.9;
+		if (sideB <= 0) {
+			sideB = 0.1;
 		}
-		if (sideB + sideC <= sideA) {
-			error = 'Triangle inequality violated: the sum of two sides must be greater than the third. Auto-correcting...';
-			sideA = (sideB + sideC) * 0.9;
+		if (sideC <= 0) {
+			sideC = 0.1;
+		}
+		if (!isValidTriangle(sideA, sideB, sideC)) {
+			error = `Triangle inequality violated: ${whichInequality(sideA, sideB, sideC)}.`;
+			return;
 		}
 		result = calculateScaleneTriangle(sideA, sideB, sideC);
+		addToHistory('triangle-scalene', {
+			inputs: `a=${formatNumber(sideA)}, b=${formatNumber(sideB)}, c=${formatNumber(sideC)}`,
+			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
+			unit,
+			timestamp: Date.now()
+		});
 	}
 
 	function handleReset() {
-		sideA = 6; sideB = 8; sideC = 10;
+		sideA = 6;
+		sideB = 8;
+		sideC = 10;
 		error = '';
 		result = calculateScaleneTriangle(sideA, sideB, sideC);
+	}
+
+	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
+		if (oldUnit !== newUnit) {
+			sideA = convertValue(sideA, oldUnit, newUnit);
+			sideB = convertValue(sideB, oldUnit, newUnit);
+			sideC = convertValue(sideC, oldUnit, newUnit);
+		}
 	}
 
 	function updateUrl() {
@@ -108,7 +172,15 @@
 			if (!isNaN(val) && val > 0) sideC = val;
 		}
 		const u = sp.get('unit') as Unit | null;
-		if (u === 'mm' || u === 'cm' || u === 'm' || u === 'km' || u === 'in' || u === 'ft' || u === 'yd') {
+		if (
+			u === 'mm' ||
+			u === 'cm' ||
+			u === 'm' ||
+			u === 'km' ||
+			u === 'in' ||
+			u === 'ft' ||
+			u === 'yd'
+		) {
 			unit = u;
 		}
 		handleCalculate();
@@ -128,99 +200,152 @@
 	structuredData={pageData}
 />
 
-<Breadcrumb items={[{ label: 'Home', href: '/' }, { label: '2D Geometry', href: '/2d' }, { label: 'Triangle', href: '/2d/triangle' }, { label: 'Scalene' }]} />
+<Breadcrumb
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry2d'), href: '/2d' },
+		{ label: tKey('shapes.scalene-triangle.name'), href: '/2d/triangle' },
+		{ label: 'Scalene' }
+	]}
+/>
 
 <BackButton href="/2d/triangle" />
 
 <div class="mb-8">
-	<p class="micro-label mb-2">Triangle Types</p>
-	<h1 class="font-display font-bold text-4xl tracking-tight text-text-primary">Scalene Triangle</h1>
-	<p class="text-text-secondary mt-2">All three sides are different lengths. Uses Heron's formula.</p>
+	<p class="micro-label mb-2">{tKey('common.geometry2d')}</p>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">{tKey('shapes.scalene-triangle.name')}</h1>
+	<p class="mt-2 text-text-secondary">
+		{tKey('shapes.scalene-triangle.desc')}
+	</p>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+<div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
 	<!-- Left: Visualization -->
-	<div class="glow-panel aspect-square flex items-center justify-center p-8">
-		<svg viewBox="0 0 200 200" class="shape-glow w-full h-full max-w-xs">
+	<div class="glow-panel flex aspect-square items-center justify-center p-8">
+		<svg viewBox="0 0 200 200" class="shape-glow h-full w-full max-w-xs">
 			<polygon
 				points="60,140 100,60 140,140"
 				fill="rgba(99,102,241,0.08)"
 				stroke="#818CF8"
 				stroke-width="2"
 			/>
-			<text x="100" y="155" font-family="JetBrains Mono" font-size="11" fill="#475569" text-anchor="middle">a = {formatNumber(sideA)}</text>
-			<text x="75" y="95" font-family="JetBrains Mono" font-size="11" fill="#475569" text-anchor="end">b = {formatNumber(sideB)}</text>
-			<text x="125" y="95" font-family="JetBrains Mono" font-size="11" fill="#475569" text-anchor="start">c = {formatNumber(sideC)}</text>
+			<text
+				x="100"
+				y="155"
+				font-family="JetBrains Mono"
+				font-size="11"
+				fill="#475569"
+				text-anchor="middle">a = {formatNumber(sideA)}</text
+			>
+			<text
+				x="75"
+				y="95"
+				font-family="JetBrains Mono"
+				font-size="11"
+				fill="#475569"
+				text-anchor="end">b = {formatNumber(sideB)}</text
+			>
+			<text
+				x="125"
+				y="95"
+				font-family="JetBrains Mono"
+				font-size="11"
+				fill="#475569"
+				text-anchor="start">c = {formatNumber(sideC)}</text
+			>
 		</svg>
 	</div>
 
 	<!-- Right: Inputs + Formula + Results -->
-	<div class="surface-panel p-6 flex flex-col gap-6">
+	<div class="surface-panel flex flex-col gap-6 p-6">
 		<!-- Inputs -->
 		<div class="flex flex-col gap-4">
 			<div class="flex items-center justify-between">
-				<p class="micro-label">Dimensions</p>
-				<UnitSelector bind:unit />
+				<p class="micro-label">{tKey('common.dimensions')}</p>
+				<UnitSelector bind:unit onChange={handleUnitChange} />
 			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="sideA">Side A (a)</label>
-				<div class="relative">
-					<input id="sideA" type="number" min="0" class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150" placeholder="Enter a positive number" bind:value={sideA} onkeydown={handleKeyDown} />
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="sideB">Side B (b)</label>
-				<div class="relative">
-					<input id="sideB" type="number" min="0" class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150" placeholder="Enter a positive number" bind:value={sideB} onkeydown={handleKeyDown} />
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="sideC">Side C (c)</label>
-				<div class="relative">
-					<input id="sideC" type="number" min="0" class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150" placeholder="Enter a positive number" bind:value={sideC} onkeydown={handleKeyDown} />
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
+			<SliderInput
+				label={tKey('shapes.scalene-triangle.sideA')}
+				bind:value={sideA}
+				min={0}
+				max={100}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
+			<SliderInput
+				label={tKey('shapes.scalene-triangle.sideB')}
+				bind:value={sideB}
+				min={0}
+				max={100}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
+			<SliderInput
+				label={tKey('shapes.scalene-triangle.sideC')}
+				bind:value={sideC}
+				min={0}
+				max={100}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
 			{#if error}
-				<div class="p-3 rounded-lg border border-rose-dim bg-rose/10 text-rose text-sm animate-fade-slide-up">{error}</div>
+				<div
+					class="animate-fade-slide-up rounded-lg border border-rose-dim bg-rose/10 p-3 text-sm text-rose"
+				>
+					{error}
+				</div>
 			{/if}
-			<button onclick={handleReset} class="w-full px-4 py-2.5 bg-bg-inset border border-border-default rounded-lg text-text-secondary hover:text-text-primary hover:border-border-strong transition-colors duration-150 font-mono text-sm">Reset</button>
+			<button
+				onclick={handleReset}
+				class="border-border-default hover:border-border-strong w-full rounded-lg border bg-bg-inset px-4 py-2.5 font-mono text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
+				>{tKey('common.reset')}</button
+			>
 		</div>
 
 		<hr class="border-border-divider" />
 
 		<!-- Formula -->
 		<div>
-			<p class="micro-label mb-3">Formulas</p>
+			<p class="micro-label mb-3">{tKey('common.formulas')}</p>
 			<FormulaDisplay template={semiPerimeterFormula} evaluated={evaluatedSemiPerimeter} />
-			<div class="mt-3"></div>
+			<StepByStep steps={semiPerimeterSteps} />
+			<div class="mt-4"></div>
 			<FormulaDisplay template={result.formulas.area} evaluated={evaluatedArea} />
-			<div class="mt-3"></div>
+			<StepByStep steps={areaSteps} />
+			<div class="mt-4"></div>
 			<FormulaDisplay template={result.formulas.perimeter} evaluated={evaluatedPerimeter} />
+			<StepByStep steps={perimeterSteps} />
 		</div>
 
 		<hr class="border-border-divider" />
 
 		<!-- Results -->
 		<div>
-			<p class="micro-label mb-3">Results</p>
+			<p class="micro-label mb-3">{tKey('common.results')}</p>
 			<div class="flex flex-wrap gap-3">
 				<div class="result-chip animate-fade-slide-up">
-					<span class="micro-label text-text-muted">Area</span>
-					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
-						{formatNumber(result.area)} <span class="text-sm text-emerald/70">{areaUnitLabel(unit)}</span>
+					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
+					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
+						<SafeDisplay value={displayArea} unit={areaUnitLabel(unit)} />
 					</span>
 				</div>
 				<div class="result-chip animate-fade-slide-up" style="animation-delay: 50ms">
-					<span class="micro-label text-text-muted">Perimeter</span>
-					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
-						{formatNumber(result.perimeter)} <span class="text-sm text-emerald/70">{unit}</span>
+					<span class="micro-label text-text-muted">{tKey('common.perimeter')}</span>
+					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
+						<SafeDisplay value={displayPerimeter} {unit} />
 					</span>
 				</div>
 			</div>
+			<div class="mt-3 flex items-center gap-2">
+				<CopyLinkButton />
+				<DownloadPngButton />
+			</div>
 		</div>
+
+		<CalculationHistory shapeId="triangle-scalene" />
 	</div>
 </div>
 

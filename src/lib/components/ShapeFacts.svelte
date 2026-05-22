@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { tKey } from '$lib/stores/lang.svelte';
+
 	const facts: Record<string, string> = {
 		circle:
-			'The ratio of a circle\'s circumference to its diameter is always π, approximately 3.14159 — a constant that appears everywhere in nature.',
+			"The ratio of a circle's circumference to its diameter is always π, approximately 3.14159 — a constant that appears everywhere in nature.",
 		rectangle:
 			'A rectangle with equal sides is called a square — it is the most symmetrical rectangle with 4 lines of symmetry.',
 		square:
@@ -11,29 +13,26 @@
 		trapezoid:
 			'The area of a trapezoid can be visualized as averaging the two parallel sides and multiplying by the height between them.',
 		parallelogram:
-			'A parallelogram and a rectangle with the same base and height have exactly the same area — Cavalieri\'s principle!',
+			"A parallelogram and a rectangle with the same base and height have exactly the same area — Cavalieri's principle!",
 		ellipse:
 			'Planetary orbits are elliptical, with the Sun at one focus — a discovery made by Johannes Kepler in 1609.',
 		rhombus:
 			'A rhombus has all sides equal, like a square, but its angles can be anything — making it a "diamond" shape.',
-		kite:
-			'A kite has two pairs of adjacent sides that are equal. The diagonals of a kite always intersect at right angles.',
+		kite: 'A kite has two pairs of adjacent sides that are equal. The diagonals of a kite always intersect at right angles.',
 		'equilateral-triangle':
 			'An equilateral triangle is also equiangular — all three angles are exactly 60°, making it one of the most regular polygons.',
 		'isosceles-triangle':
 			'An isosceles triangle has a line of symmetry that bisects the base at a right angle and splits the apex angle in two.',
 		'right-triangle':
 			'The Pythagorean theorem (a² + b² = c²) was known to ancient Babylonians over 1,000 years before Pythagoras.',
-		cube:
-			'A cube is the only Platonic solid with six square faces — it has 6 faces, 12 edges, and 8 vertices.',
+		cube: 'A cube is the only Platonic solid with six square faces — it has 6 faces, 12 edges, and 8 vertices.',
 		'rectangular-prism':
 			'A rectangular prism is also called a cuboid — bricks, books, and shipping boxes are all cuboids.',
 		sphere:
 			'A sphere has the smallest surface area for a given volume of any 3D shape — nature loves spheres (bubbles, planets).',
 		cylinder:
 			'The cylinder is the shape of rolling objects — from cans and barrels to ancient columns in architecture.',
-		cone:
-			'A cone is formed by rotating a right triangle around one of its legs — Egyptian pyramids are square cones.',
+		cone: 'A cone is formed by rotating a right triangle around one of its legs — Egyptian pyramids are square cones.',
 		pyramid:
 			'The Great Pyramid of Giza was originally covered in polished white limestone, making it reflect sunlight like a giant mirror.',
 		torus:
@@ -45,16 +44,24 @@
 </script>
 
 {#if fact}
-	<div class="mt-6 p-4 rounded-lg border border-border-default bg-bg-inset/50">
+	<div class="border-border-default mt-6 rounded-lg border bg-bg-inset/50 p-4">
 		<div class="flex items-start gap-2.5">
-			<svg class="w-4 h-4 text-indigo mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<circle cx="12" cy="12" r="10"/>
-				<path d="M12 16v-4"/>
-				<path d="M12 8h.01"/>
+			<svg
+				class="mt-0.5 h-4 w-4 flex-shrink-0 text-indigo"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<circle cx="12" cy="12" r="10" />
+				<path d="M12 16v-4" />
+				<path d="M12 8h.01" />
 			</svg>
 			<div>
-				<p class="micro-label mb-1">Did you know?</p>
-				<p class="text-text-secondary text-sm leading-relaxed">{fact}</p>
+				<p class="micro-label mb-1">{tKey('common.didYouKnow')}</p>
+				<p class="text-sm leading-relaxed text-text-secondary">{fact}</p>
 			</div>
 		</div>
 	</div>

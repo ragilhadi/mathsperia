@@ -7,11 +7,25 @@
 	import UnitSelector from '$lib/components/UnitSelector.svelte';
 	import ShapeFacts from '$lib/components/ShapeFacts.svelte';
 	import ShapeProperties from '$lib/components/ShapeProperties.svelte';
+	import StepByStep from '$lib/components/StepByStep.svelte';
+	import SafeDisplay from '$lib/components/SafeDisplay.svelte';
 	import { calculateParallelogram } from '$lib/utils/shapes';
-	import { formatNumber, clamp } from '$lib/utils/format';
-	import { getLastUnit, areaUnitLabel, type Unit } from '$lib/utils/units';
+	import { formatNumber, clamp, safeNumber } from '$lib/utils/format';
+	import {
+		getLastUnit,
+		areaUnitLabel,
+		convertValue,
+		convertAreaValue,
+		type Unit
+	} from '$lib/utils/units';
 	import SeoHead from '$lib/components/SeoHead.svelte';
 	import { mathSolverData } from '$lib/utils/seo';
+	import SliderInput from '$lib/components/SliderInput.svelte';
+	import CalculationHistory from '$lib/components/CalculationHistory.svelte';
+	import CopyLinkButton from '$lib/components/CopyLinkButton.svelte';
+	import DownloadPngButton from '$lib/components/DownloadPngButton.svelte';
+	import { addToHistory } from '$lib/utils/history';
+	import { tKey } from '$lib/stores/lang.svelte';
 
 	const pageData = mathSolverData({
 		shape: 'Parallelogram',
@@ -25,27 +39,63 @@
 	let height = $state(5);
 	let side = $state(6);
 	let unit = $state<Unit>(getLastUnit());
+	const BASE_UNIT: Unit = 'cm';
 	const offsetX = 20;
 	let result = $state<ReturnType<typeof calculateParallelogram>>(calculateParallelogram(8, 5, 6));
 
 	let scaleFactor = $derived(Math.max(base, height) / 8);
-	let svgBase = $derived(clamp(base / scaleFactor * 12, 50, 140));
-	let svgHeight = $derived(clamp(height / scaleFactor * 10, 30, 100));
+	let svgBase = $derived(clamp((base / scaleFactor) * 12, 50, 140));
+	let svgHeight = $derived(clamp((height / scaleFactor) * 10, 30, 100));
+
+	let displayArea = $derived(safeNumber(convertAreaValue(result.area, BASE_UNIT, unit), 0));
+	let displayPerimeter = $derived(safeNumber(convertValue(result.perimeter, BASE_UNIT, unit), 0));
 
 	let evaluatedArea = $derived(
-		`A = \\text{${formatNumber(base)}} \\times \\text{${formatNumber(height)}} = \\text{${formatNumber(result.area)}} \\text{ ${unit}}^2`
+		`A = \\text{${formatNumber(base)}} \\times \\text{${formatNumber(height)}} = \\text{${formatNumber(displayArea)}} \\text{ ${unit}}^2`
 	);
 	let evaluatedPerimeter = $derived(
-		`P = 2(\\text{${formatNumber(base)}} + \\text{${formatNumber(side)}}) = \\text{${formatNumber(result.perimeter)}} \\text{ ${unit}}`
+		`P = 2(\\text{${formatNumber(base)}} + \\text{${formatNumber(side)}}) = \\text{${formatNumber(displayPerimeter)}} \\text{ ${unit}}`
 	);
 
+	let areaSteps = $derived([
+		`A = b \\times h`,
+		`A = \\text{${formatNumber(base)}} \\times \\text{${formatNumber(height)}}`,
+		`A = \\text{${formatNumber(base * height)}} \\text{ cm}^2`,
+		`A \\approx \\text{${formatNumber(displayArea)}} \\text{ ${unit}}^2`
+	]);
+
+	let perimeterSteps = $derived([
+		`P = 2(b + s)`,
+		`P = 2 \\times (\\text{${formatNumber(base)}} + \\text{${formatNumber(side)}})`,
+		`P \\approx \\text{${formatNumber(displayPerimeter)}} \\text{ ${unit}}`
+	]);
+
 	function handleCalculate() {
+		if (base <= 0) base = 0.1;
+		if (height <= 0) height = 0.1;
+		if (side <= 0) side = 0.1;
 		result = calculateParallelogram(base, height, side);
+		addToHistory('parallelogram', {
+			inputs: `b=${formatNumber(base)}, h=${formatNumber(height)}, s=${formatNumber(side)}`,
+			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
+			unit,
+			timestamp: Date.now()
+		});
 	}
 
 	function handleReset() {
-		base = 8; height = 5; side = 6;
+		base = 8;
+		height = 5;
+		side = 6;
 		result = calculateParallelogram(base, height, side);
+	}
+
+	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
+		if (oldUnit !== newUnit) {
+			base = convertValue(base, oldUnit, newUnit);
+			height = convertValue(height, oldUnit, newUnit);
+			side = convertValue(side, oldUnit, newUnit);
+		}
 	}
 
 	function updateUrl() {
@@ -86,7 +136,15 @@
 			if (!isNaN(val) && val > 0) side = val;
 		}
 		const u = sp.get('unit') as Unit | null;
-		if (u === 'mm' || u === 'cm' || u === 'm' || u === 'km' || u === 'in' || u === 'ft' || u === 'yd') {
+		if (
+			u === 'mm' ||
+			u === 'cm' ||
+			u === 'm' ||
+			u === 'km' ||
+			u === 'in' ||
+			u === 'ft' ||
+			u === 'yd'
+		) {
 			unit = u;
 		}
 		handleCalculate();
@@ -106,95 +164,142 @@
 	structuredData={pageData}
 />
 
-<Breadcrumb items={[{ label: 'Home', href: '/' }, { label: '2D Geometry', href: '/2d' }, { label: 'Parallelogram' }]} />
+<Breadcrumb
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry2d'), href: '/2d' },
+		{ label: tKey('shapes.parallelogram.name') }
+	]}
+/>
 
 <BackButton href="/2d" />
 
 <div class="mb-8">
-	<p class="micro-label mb-2">2D Geometry</p>
-	<h1 class="font-display font-bold text-4xl tracking-tight text-text-primary">Parallelogram Calculator</h1>
-	<p class="text-text-secondary mt-2">Calculate area and perimeter of a parallelogram.</p>
+	<p class="micro-label mb-2">{tKey('common.geometry2d')}</p>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('shapes.parallelogram.name')}
+	</h1>
+	<p class="mt-2 text-text-secondary">{tKey('shapes.parallelogram.desc')}</p>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+<div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
 	<!-- Left: Visualization -->
-	<div class="glow-panel aspect-square flex items-center justify-center p-8">
-		<svg viewBox="0 0 200 200" class="shape-glow w-full h-full max-w-xs">
+	<div class="glow-panel flex aspect-square items-center justify-center p-8">
+		<svg viewBox="0 0 200 200" class="shape-glow h-full w-full max-w-xs">
 			<polygon
 				points={`${70 - offsetX},${120 - svgHeight / 2} ${70 + svgBase - offsetX},${120 - svgHeight / 2} ${70 + svgBase},${120 + svgHeight / 2} ${70},${120 + svgHeight / 2}`}
 				fill="rgba(99,102,241,0.08)"
 				stroke="#818CF8"
 				stroke-width="2"
 			/>
-			<line x1={70 + svgBase / 2 - offsetX / 2} y1={120 - svgHeight / 2} x2={70 + svgBase / 2 - offsetX / 2} y2={120 + svgHeight / 2}
-				stroke="rgba(148, 163, 184, 0.4)" stroke-width="1" stroke-dasharray="4 3"/>
-			<text x={70 + svgBase / 2 - offsetX / 2 - 6} y="120" font-family="JetBrains Mono" font-size="11" fill="#475569" text-anchor="end">h = {formatNumber(height)}</text>
-			<text x={70 + svgBase / 2 - offsetX / 2} y={120 - svgHeight / 2 - 10} font-family="JetBrains Mono" font-size="11" fill="#475569" text-anchor="middle">b = {formatNumber(base)}</text>
+			<line
+				x1={70 + svgBase / 2 - offsetX / 2}
+				y1={120 - svgHeight / 2}
+				x2={70 + svgBase / 2 - offsetX / 2}
+				y2={120 + svgHeight / 2}
+				stroke="rgba(148, 163, 184, 0.4)"
+				stroke-width="1"
+				stroke-dasharray="4 3"
+			/>
+			<text
+				x={70 + svgBase / 2 - offsetX / 2 - 6}
+				y="120"
+				font-family="JetBrains Mono"
+				font-size="11"
+				fill="#475569"
+				text-anchor="end">h = {formatNumber(height)}</text
+			>
+			<text
+				x={70 + svgBase / 2 - offsetX / 2}
+				y={120 - svgHeight / 2 - 10}
+				font-family="JetBrains Mono"
+				font-size="11"
+				fill="#475569"
+				text-anchor="middle">b = {formatNumber(base)}</text
+			>
 		</svg>
 	</div>
 
 	<!-- Right: Inputs + Formula + Results -->
-	<div class="surface-panel p-6 flex flex-col gap-6">
+	<div class="surface-panel flex flex-col gap-6 p-6">
 		<!-- Inputs -->
 		<div class="flex flex-col gap-4">
 			<div class="flex items-center justify-between">
-				<p class="micro-label">Dimensions</p>
-				<UnitSelector bind:unit />
+				<p class="micro-label">{tKey('common.dimensions')}</p>
+				<UnitSelector bind:unit onChange={handleUnitChange} />
 			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="base">Base (b)</label>
-				<div class="relative">
-					<input id="base" type="number" min="0" class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150" placeholder="Enter a positive number" bind:value={base} onkeydown={handleKeyDown} />
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="height">Height (h)</label>
-				<div class="relative">
-					<input id="height" type="number" min="0" class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150" placeholder="Enter a positive number" bind:value={height} onkeydown={handleKeyDown} />
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
-			<div class="flex flex-col gap-1.5">
-				<label class="micro-label" for="side">Side (s)</label>
-				<div class="relative">
-					<input id="side" type="number" min="0" class="w-full bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20 transition-colors duration-150" placeholder="Enter a positive number" bind:value={side} onkeydown={handleKeyDown} />
-					<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm font-mono">{unit}</span>
-				</div>
-			</div>
-			<button onclick={handleReset} class="w-full px-4 py-2.5 bg-bg-inset border border-border-default rounded-lg text-text-secondary hover:text-text-primary hover:border-border-strong transition-colors duration-150 font-mono text-sm">Reset</button>
+			<SliderInput
+				label={tKey('shapes.parallelogram.base')}
+				bind:value={base}
+				min={0}
+				max={100}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
+			<SliderInput
+				label={tKey('shapes.parallelogram.height')}
+				bind:value={height}
+				min={0}
+				max={100}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
+			<SliderInput
+				label={tKey('shapes.parallelogram.side')}
+				bind:value={side}
+				min={0}
+				max={100}
+				step={1}
+				{unit}
+				onkeydown={handleKeyDown}
+			/>
+			<button
+				onclick={handleReset}
+				class="border-border-default hover:border-border-strong w-full rounded-lg border bg-bg-inset px-4 py-2.5 font-mono text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
+				>{tKey('common.reset')}</button
+			>
 		</div>
 
 		<hr class="border-border-divider" />
 
 		<!-- Formula -->
 		<div>
-			<p class="micro-label mb-3">Formulas</p>
+			<p class="micro-label mb-3">{tKey('common.formulas')}</p>
 			<FormulaDisplay template={result.formulas.area} evaluated={evaluatedArea} />
-			<div class="mt-3"></div>
+			<StepByStep steps={areaSteps} />
+			<div class="mt-4"></div>
 			<FormulaDisplay template={result.formulas.perimeter} evaluated={evaluatedPerimeter} />
+			<StepByStep steps={perimeterSteps} />
 		</div>
 
 		<hr class="border-border-divider" />
 
 		<!-- Results -->
 		<div>
-			<p class="micro-label mb-3">Results</p>
+			<p class="micro-label mb-3">{tKey('common.results')}</p>
 			<div class="flex flex-wrap gap-3">
 				<div class="result-chip animate-fade-slide-up">
-					<span class="micro-label text-text-muted">Area</span>
-					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
-						{formatNumber(result.area)} <span class="text-sm text-emerald/70">{areaUnitLabel(unit)}</span>
+					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
+					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
+						<SafeDisplay value={displayArea} unit={areaUnitLabel(unit)} />
 					</span>
 				</div>
 				<div class="result-chip animate-fade-slide-up" style="animation-delay: 50ms">
-					<span class="micro-label text-text-muted">Perimeter</span>
-					<span class="font-mono text-2xl font-medium text-emerald-bright mt-0.5">
-						{formatNumber(result.perimeter)} <span class="text-sm text-emerald/70">{unit}</span>
+					<span class="micro-label text-text-muted">{tKey('common.perimeter')}</span>
+					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
+						<SafeDisplay value={displayPerimeter} {unit} />
 					</span>
 				</div>
 			</div>
+			<div class="mt-3 flex items-center gap-2">
+				<CopyLinkButton />
+				<DownloadPngButton />
+			</div>
 		</div>
+
+		<CalculationHistory shapeId="parallelogram" />
 	</div>
 </div>
 

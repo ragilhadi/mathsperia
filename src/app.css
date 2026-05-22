@@ -10,41 +10,41 @@
 /* Mathsperia — Precision Observatory Design System */
 :root {
 	/* Surfaces */
-	--color-bg-base: #07090F;
-	--color-bg-surface: #0D1117;
-	--color-bg-elevated: #141B2D;
-	--color-bg-overlay: #1C2540;
-	--color-bg-inset: #090D16;
+	--color-bg-base: #07090f;
+	--color-bg-surface: #0d1117;
+	--color-bg-elevated: #141b2d;
+	--color-bg-overlay: #1c2540;
+	--color-bg-inset: #090d16;
 
 	/* Text */
-	--color-text-primary: #F1F5F9;
-	--color-text-secondary: #94A3B8;
+	--color-text-primary: #f1f5f9;
+	--color-text-secondary: #94a3b8;
 	--color-text-muted: #475569;
 
 	/* Indigo — primary accent */
-	--color-indigo-dim: #312E81;
-	--color-indigo-mid: #4F46E5;
-	--color-indigo: #818CF8;
-	--color-indigo-bright: #C7D2FE;
+	--color-indigo-dim: #312e81;
+	--color-indigo-mid: #4f46e5;
+	--color-indigo: #818cf8;
+	--color-indigo-bright: #c7d2fe;
 
 	/* Emerald — results */
-	--color-emerald-dim: #064E3B;
-	--color-emerald: #34D399;
-	--color-emerald-bright: #A7F3D0;
+	--color-emerald-dim: #064e3b;
+	--color-emerald: #34d399;
+	--color-emerald-bright: #a7f3d0;
 
 	/* Amber — formulas */
-	--color-amber-dim: #451A03;
-	--color-amber: #FCD34D;
-	--color-amber-bright: #FEF3C7;
+	--color-amber-dim: #451a03;
+	--color-amber: #fcd34d;
+	--color-amber-bright: #fef3c7;
 
 	/* Rose — errors */
-	--color-rose: #F87171;
-	--color-rose-dim: #450A0A;
+	--color-rose: #f87171;
+	--color-rose-dim: #450a0a;
 
 	/* Borders */
-	--color-border-subtle: rgba(99, 102, 241, 0.10);
-	--color-border-default: rgba(99, 102, 241, 0.20);
-	--color-border-strong: rgba(99, 102, 241, 0.40);
+	--color-border-subtle: rgba(99, 102, 241, 0.1);
+	--color-border-default: rgba(99, 102, 241, 0.2);
+	--color-border-strong: rgba(99, 102, 241, 0.4);
 	--color-border-divider: rgba(148, 163, 184, 0.08);
 
 	/* Fonts */
@@ -82,6 +82,40 @@
 	--font-mono: var(--font-mono);
 }
 
+/* ════════════════ LIGHT THEME ════════════════ */
+html[data-theme='light'] {
+	--color-bg-base: #f8fafc;
+	--color-bg-surface: #ffffff;
+	--color-bg-elevated: #f1f5f9;
+	--color-bg-overlay: #e2e8f0;
+	--color-bg-inset: #f8fafc;
+
+	--color-text-primary: #0f172a;
+	--color-text-secondary: #475569;
+	--color-text-muted: #94a3b8;
+
+	--color-indigo-dim: #e0e7ff;
+	--color-indigo-mid: #6366f1;
+	--color-indigo: #4f46e5;
+	--color-indigo-bright: #312e81;
+
+	--color-emerald-dim: #d1fae5;
+	--color-emerald: #059669;
+	--color-emerald-bright: #064e3b;
+
+	--color-amber-dim: #fef3c7;
+	--color-amber: #d97706;
+	--color-amber-bright: #92400e;
+
+	--color-rose: #dc2626;
+	--color-rose-dim: #fee2e2;
+
+	--color-border-subtle: rgba(99, 102, 241, 0.1);
+	--color-border-default: rgba(99, 102, 241, 0.18);
+	--color-border-strong: rgba(99, 102, 241, 0.35);
+	--color-border-divider: rgba(148, 163, 184, 0.15);
+}
+
 html {
 	font-family: 'Inter', system-ui, sans-serif;
 	-webkit-font-smoothing: antialiased;
@@ -115,13 +149,16 @@ body {
 		0 0 0 1px rgba(99, 102, 241, 0.05),
 		0 4px 24px rgba(0, 0, 0, 0.4),
 		inset 0 1px 0 rgba(255, 255, 255, 0.04);
-	transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+	transition:
+		border-color 150ms ease,
+		box-shadow 150ms ease,
+		transform 150ms ease;
 }
 
 .surface-panel:hover {
 	border-color: var(--color-border-default);
 	box-shadow:
-		0 0 0 1px rgba(99, 102, 241, 0.10),
+		0 0 0 1px rgba(99, 102, 241, 0.1),
 		0 8px 32px rgba(99, 102, 241, 0.12),
 		inset 0 1px 0 rgba(255, 255, 255, 0.05);
 	transform: translateY(-2px);
@@ -129,7 +166,11 @@ body {
 
 /* SVG visualization container */
 .glow-panel {
-	background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.07) 0%, var(--color-bg-inset) 70%);
+	background: radial-gradient(
+		ellipse at center,
+		rgba(99, 102, 241, 0.07) 0%,
+		var(--color-bg-inset) 70%
+	);
 	border: 1px solid var(--color-border-default);
 	border-radius: 1rem;
 	box-shadow: inset 0 0 40px rgba(99, 102, 241, 0.05);
@@ -171,17 +212,31 @@ body {
 
 /* Keyframes */
 @keyframes fadeSlideUp {
-	from { opacity: 0; transform: translateY(6px); }
-	to { opacity: 1; transform: translateY(0); }
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 @keyframes fadeIn {
-	from { opacity: 0; }
-	to { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
 
-.animate-fade-slide-up { animation: fadeSlideUp 0.2s ease-out both; }
-.animate-fade-in { animation: fadeIn 0.3s ease-out both; }
+.animate-fade-slide-up {
+	animation: fadeSlideUp 0.2s ease-out both;
+}
+.animate-fade-in {
+	animation: fadeIn 0.3s ease-out both;
+}
 
 /* Smooth transitions for interactive elements */
 .transition-smooth {

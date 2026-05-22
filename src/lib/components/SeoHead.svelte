@@ -24,6 +24,12 @@
 	const siteUrl = 'https://mathsperia.web.id';
 	const canonical = canonicalPath ? `${siteUrl}${canonicalPath}` : siteUrl;
 	const fullTitle = title.includes('Mathsperia') ? title : `${title} | Mathsperia`;
+
+	let jsonLdString = $derived(
+		structuredData
+			? `\u003cscript type="application/ld+json"\u003e${JSON.stringify(structuredData)}\u003c/script\u003e`
+			: ''
+	);
 </script>
 
 <svelte:head>
@@ -35,7 +41,10 @@
 	{/if}
 	<meta name="author" content="Mathsperia" />
 	<meta name="theme-color" content="#07090F" />
-	<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+	<meta
+		name="robots"
+		content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'}
+	/>
 
 	<!-- Canonical -->
 	<link rel="canonical" href={canonical} />
@@ -57,9 +66,7 @@
 	<meta name="twitter:site" content="@mathsperia" />
 
 	<!-- Structured Data / JSON-LD -->
-	{#if structuredData}
-		<script type="application/ld+json">
-			{@html JSON.stringify(structuredData)}
-		</script>
+	{#if jsonLdString}
+		{@html jsonLdString}
 	{/if}
 </svelte:head>
