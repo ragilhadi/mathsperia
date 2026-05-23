@@ -39,7 +39,7 @@
 
 	let side = $state(5);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateCube>>(calculateCube(5));
+	let result = $derived(calculateCube(side));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -67,7 +67,6 @@
 	]);
 
 	function handleCalculate() {
-		result = calculateCube(side);
 		addToHistory('cube', {
 			inputs: `s=${side}`,
 			results: `V=${formatNumber(result.volume)}, A=${formatNumber(result.area)}`,
@@ -78,7 +77,6 @@
 
 	function handleReset() {
 		side = 5;
-		result = calculateCube(side);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -128,7 +126,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -142,14 +139,21 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry3d'), href: '/3d' }, { label: tKey('shapes.cube.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry3d'), href: '/3d' },
+		{ label: tKey('shapes.cube.name') }
+	]}
 />
 
 <BackButton href="/3d" />
 
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry3d')}</p>
-	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">{tKey('shapes.cube.name')} {tKey('common.calculator')}</h1>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('shapes.cube.name')}
+		{tKey('common.calculator')}
+	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('shapes.cube.desc')}</p>
 </div>
 
@@ -259,7 +263,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.volume')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

@@ -40,7 +40,7 @@
 	let baseSide = $state(6);
 	let height = $state(8);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculatePyramid>>(calculatePyramid(6, 8));
+	let result = $derived(calculatePyramid(baseSide, height));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -81,7 +81,6 @@
 	function handleCalculate() {
 		if (baseSide <= 0) baseSide = 0.1;
 		if (height <= 0) height = 0.1;
-		result = calculatePyramid(baseSide, height);
 		addToHistory('pyramid', {
 			inputs: `b=${formatNumber(baseSide)}, h=${formatNumber(height)}`,
 			results: `V=${formatNumber(result.volume)}, A=${formatNumber(result.area)}`,
@@ -93,7 +92,6 @@
 	function handleReset() {
 		baseSide = 6;
 		height = 8;
-		result = calculatePyramid(baseSide, height);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -150,7 +148,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -176,7 +173,8 @@
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry3d')}</p>
 	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
-		{tKey('shapes.pyramid.name')} {tKey('common.calculator')}
+		{tKey('shapes.pyramid.name')}
+		{tKey('common.calculator')}
 	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('shapes.pyramid.desc')}</p>
 </div>
@@ -362,7 +360,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">Results</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">Volume</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

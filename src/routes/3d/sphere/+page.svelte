@@ -39,7 +39,7 @@
 
 	let radius = $state(5);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateSphere>>(calculateSphere(5));
+	let result = $derived(calculateSphere(radius));
 	const BASE_UNIT: Unit = 'cm';
 
 	let displayVolume = $derived(safeNumber(convertVolumeValue(result.volume, BASE_UNIT, unit), 0));
@@ -66,7 +66,6 @@
 	let svgRadius = $derived(clamp(radius * 8, 20, 80));
 
 	function handleCalculate() {
-		result = calculateSphere(radius);
 		addToHistory('sphere', {
 			inputs: `r=${radius}`,
 			results: `V=${formatNumber(result.volume)}, A=${formatNumber(result.area)}`,
@@ -77,7 +76,6 @@
 
 	function handleReset() {
 		radius = 5;
-		result = calculateSphere(radius);
 	}
 
 	function updateUrl() {
@@ -127,7 +125,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 		setLastUnit(unit);
 	});
@@ -142,7 +139,11 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry3d'), href: '/3d' }, { label: tKey('shapes.sphere.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry3d'), href: '/3d' },
+		{ label: tKey('shapes.sphere.name') }
+	]}
 />
 
 <BackButton href="/3d" />
@@ -150,7 +151,8 @@
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry3d')}</p>
 	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
-		{tKey('shapes.sphere.name')} {tKey('common.calculator')}
+		{tKey('shapes.sphere.name')}
+		{tKey('common.calculator')}
 	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('shapes.sphere.desc')}</p>
 </div>
@@ -318,7 +320,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.volume')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

@@ -135,7 +135,8 @@ export function slopeSteps(
 
 export function calculateShoelaceArea(coordinates: { x: number; y: number }[]): CoordinateResult {
 	const n = coordinates.length;
-	if (n < 3) return { value: 0, formula: 'A = \\frac{1}{2}|\\sum_{i=1}^{n}(x_i y_{i+1} - x_{i+1} y_i)|' };
+	if (n < 3)
+		return { value: 0, formula: 'A = \\frac{1}{2}|\\sum_{i=1}^{n}(x_i y_{i+1} - x_{i+1} y_i)|' };
 	let sum = 0;
 	for (let i = 0; i < n; i++) {
 		const j = (i + 1) % n;
@@ -168,7 +169,9 @@ export function shoelaceSteps(coordinates: { x: number; y: number }[], result: n
 	steps.push(`\\text{Positive sum} = ${posSum.toFixed(2)}`);
 	steps.push(`\\text{Negative sum} = ${negSum.toFixed(2)}`);
 	steps.push(`\\text{Cross sum} = ${Math.abs(posSum - negSum).toFixed(2)}`);
-	steps.push(`A = \\frac{1}{2} \\times ${Math.abs(posSum - negSum).toFixed(2)} = ${result.toFixed(4)}`);
+	steps.push(
+		`A = \\frac{1}{2} \\times ${Math.abs(posSum - negSum).toFixed(2)} = ${result.toFixed(4)}`
+	);
 
 	return steps;
 }

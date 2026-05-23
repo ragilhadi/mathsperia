@@ -20,7 +20,7 @@
 
 	let radius = $state(5);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateCircle>>(calculateCircle(5));
+	let result = $derived(calculateCircle(radius));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -50,12 +50,10 @@
 
 	function handleCalculate() {
 		if (radius <= 0) radius = 0.1;
-		result = calculateCircle(radius);
 	}
 
 	function handleReset() {
 		radius = 5;
-		result = calculateCircle(radius);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -89,10 +87,6 @@
 		) {
 			unit = u;
 		}
-		handleCalculate();
-	});
-
-	$effect(() => {
 		handleCalculate();
 	});
 </script>
@@ -175,7 +169,7 @@
 
 		<div>
 			<p class="micro-label mb-3">Results</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">Area</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

@@ -39,7 +39,7 @@
 	let base = $state(6);
 	let height = $state(8);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateRightTriangle>>(calculateRightTriangle(6, 8));
+	let result = $derived(calculateRightTriangle(base, height));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -86,7 +86,6 @@
 	function handleCalculate() {
 		if (base <= 0) base = 0.1;
 		if (height <= 0) height = 0.1;
-		result = calculateRightTriangle(base, height);
 		addToHistory('triangle-right', {
 			inputs: `a=${formatNumber(base)}, b=${formatNumber(height)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -98,7 +97,6 @@
 	function handleReset() {
 		base = 6;
 		height = 8;
-		result = calculateRightTriangle(base, height);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -155,7 +153,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -276,7 +273,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">Results</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">Area</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

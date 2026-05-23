@@ -249,13 +249,19 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('nav.tools'), href: '/tools' }, { label: tKey('pages.convert.title') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('nav.tools'), href: '/tools' },
+		{ label: tKey('pages.convert.title') }
+	]}
 />
 
 <BackButton href="/tools" />
 
 <div class="mb-8">
-	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">{tKey('pages.convert.title')}</h1>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('pages.convert.title')}
+	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('pages.convert.desc')}</p>
 </div>
 
@@ -266,7 +272,7 @@
 			onclick={() => setCategory(cat.key)}
 			class={category === cat.key
 				? 'micro-label rounded-lg border border-indigo bg-indigo/20 px-4 py-2 text-indigo'
-				: 'micro-label rounded-lg border border-border-default px-4 py-2 text-text-secondary transition-colors duration-150 hover:text-text-primary'}
+				: 'micro-label border-border-default rounded-lg border px-4 py-2 text-text-secondary transition-colors duration-150 hover:text-text-primary'}
 		>
 			{cat.label}
 		</button>
@@ -281,7 +287,7 @@
 			<p class="micro-label">{tKey('pages.convert.from')}</p>
 			<select
 				bind:value={fromUnit}
-				class="bg-bg-inset border border-border-default rounded-lg px-3 py-2 font-mono text-sm text-text-primary focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20"
+				class="border-border-default focus:border-border-strong rounded-lg border bg-bg-inset px-3 py-2 font-mono text-sm text-text-primary focus:ring-2 focus:ring-indigo/20 focus:outline-none"
 			>
 				{#each currentUnits as unit}
 					<option value={unit.value}>{unit.label}</option>
@@ -292,7 +298,7 @@
 				value={direction === 'from' ? fromValue : formatNumber(fromValue)}
 				oninput={handleFromInput}
 				onfocus={() => (direction = 'from')}
-				class="bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-2xl text-text-primary focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20"
+				class="border-border-default focus:border-border-strong rounded-lg border bg-bg-inset px-4 py-2.5 font-mono text-2xl text-text-primary focus:ring-2 focus:ring-indigo/20 focus:outline-none"
 			/>
 			<span class="font-mono text-xs text-text-muted">{fromUnitLabel}</span>
 		</div>
@@ -301,7 +307,7 @@
 		<div class="flex items-center justify-center">
 			<button
 				onclick={swapUnits}
-				class="flex h-10 w-10 items-center justify-center rounded-full bg-bg-inset transition-colors duration-150 hover:bg-bg-overlay"
+				class="hover:bg-bg-overlay flex h-10 w-10 items-center justify-center rounded-full bg-bg-inset transition-colors duration-150"
 				aria-label="Swap units"
 			>
 				<svg
@@ -324,7 +330,7 @@
 			<p class="micro-label">{tKey('pages.convert.to')}</p>
 			<select
 				bind:value={toUnit}
-				class="bg-bg-inset border border-border-default rounded-lg px-3 py-2 font-mono text-sm text-text-primary focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20"
+				class="border-border-default focus:border-border-strong rounded-lg border bg-bg-inset px-3 py-2 font-mono text-sm text-text-primary focus:ring-2 focus:ring-indigo/20 focus:outline-none"
 			>
 				{#each currentUnits as unit}
 					<option value={unit.value}>{unit.label}</option>
@@ -335,7 +341,7 @@
 				value={direction === 'to' ? toValue : formatNumber(toValue)}
 				oninput={handleToInput}
 				onfocus={() => (direction = 'to')}
-				class="bg-bg-inset border border-border-default rounded-lg px-4 py-2.5 font-mono text-2xl text-emerald-bright focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20"
+				class="border-border-default focus:border-border-strong rounded-lg border bg-bg-inset px-4 py-2.5 font-mono text-2xl text-emerald-bright focus:ring-2 focus:ring-indigo/20 focus:outline-none"
 			/>
 			<span class="font-mono text-xs text-text-muted">{toUnitLabel}</span>
 		</div>
@@ -344,7 +350,8 @@
 	<!-- Conversion factor -->
 	<div class="formula-panel mt-6 text-center">
 		<span class="font-mono text-sm text-amber">
-			1 {fromUnit} = {formatNumber(conversionFactor, 8)} {toUnit}
+			1 {fromUnit} = {formatNumber(conversionFactor, 8)}
+			{toUnit}
 		</span>
 	</div>
 </div>
@@ -355,9 +362,9 @@
 	<div class="overflow-x-auto">
 		<table class="w-full text-left">
 			<thead>
-				<tr class="border-b border-border-default">
-					<th class="pb-2 pr-4 font-mono text-sm font-medium text-text-secondary">{fromUnit}</th>
-					<th class="pb-2 pr-4 font-mono text-sm font-medium text-text-secondary">{toUnit}</th>
+				<tr class="border-border-default border-b">
+					<th class="pr-4 pb-2 font-mono text-sm font-medium text-text-secondary">{fromUnit}</th>
+					<th class="pr-4 pb-2 font-mono text-sm font-medium text-text-secondary">{toUnit}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -375,9 +382,13 @@
 											if (toUnit === 'rad') return r.radians;
 											return r.gradians;
 										})()}
-					<tr class="border-b border-border-divider">
-						<td class="py-2 pr-4 font-mono text-sm text-text-primary">{formatNumber(val)} {fromUnit}</td>
-						<td class="py-2 pr-4 font-mono text-sm text-emerald-bright">{formatNumber(converted, 6)} {toUnit}</td>
+					<tr class="border-border-divider border-b">
+						<td class="py-2 pr-4 font-mono text-sm text-text-primary"
+							>{formatNumber(val)} {fromUnit}</td
+						>
+						<td class="py-2 pr-4 font-mono text-sm text-emerald-bright"
+							>{formatNumber(converted, 6)} {toUnit}</td
+						>
 					</tr>
 				{/each}
 			</tbody>

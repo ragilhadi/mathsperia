@@ -38,7 +38,7 @@
 	let diagonal1 = $state(8);
 	let diagonal2 = $state(12);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateKite>>(calculateKite(8, 12));
+	let result = $derived(calculateKite(diagonal1, diagonal2));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -70,7 +70,6 @@
 	function handleCalculate() {
 		if (diagonal1 <= 0) diagonal1 = 0.1;
 		if (diagonal2 <= 0) diagonal2 = 0.1;
-		result = calculateKite(diagonal1, diagonal2);
 		addToHistory('kite', {
 			inputs: `d1=${formatNumber(diagonal1)}, d2=${formatNumber(diagonal2)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -82,7 +81,6 @@
 	function handleReset() {
 		diagonal1 = 8;
 		diagonal2 = 12;
-		result = calculateKite(diagonal1, diagonal2);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -139,7 +137,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -153,14 +150,20 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry2d'), href: '/2d' }, { label: tKey('shapes.kite.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry2d'), href: '/2d' },
+		{ label: tKey('shapes.kite.name') }
+	]}
 />
 
 <BackButton href="/2d" />
 
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry2d')}</p>
-	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">{tKey('shapes.kite.name')}</h1>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('shapes.kite.name')}
+	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('shapes.kite.desc')}</p>
 </div>
 
@@ -256,7 +259,7 @@
 
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

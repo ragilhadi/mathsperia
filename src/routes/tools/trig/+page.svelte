@@ -29,9 +29,7 @@
 	let angle = $state(30);
 	let sideType = $state<SideType>('opposite');
 	let sideValue = $state(5);
-	let result = $state<TrigResult | null>(
-		solveRightTriangle(30, { type: 'opposite', value: 5 })
-	);
+	let result = $state<TrigResult | null>(solveRightTriangle(30, { type: 'opposite', value: 5 }));
 
 	let evaluatedFormula = $derived.by(() => {
 		if (!result) return '';
@@ -90,11 +88,17 @@
 		const pAngle = sp.get('angle');
 		const pSideType = sp.get('sideType');
 		const pSideValue = sp.get('sideValue');
-		if (pAngle !== null) { const v = parseFloat(pAngle); if (!isNaN(v)) angle = Math.max(0, Math.min(89, Math.round(v))); }
+		if (pAngle !== null) {
+			const v = parseFloat(pAngle);
+			if (!isNaN(v)) angle = Math.max(0, Math.min(89, Math.round(v)));
+		}
 		if (pSideType !== null && ['opposite', 'adjacent', 'hypotenuse'].includes(pSideType)) {
 			sideType = pSideType as SideType;
 		}
-		if (pSideValue !== null) { const v = parseFloat(pSideValue); if (!isNaN(v)) sideValue = v; }
+		if (pSideValue !== null) {
+			const v = parseFloat(pSideValue);
+			if (!isNaN(v)) sideValue = v;
+		}
 		handleCalculate();
 	});
 
@@ -197,7 +201,11 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('nav.tools'), href: '/tools' }, { label: tKey('pages.trig.title') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('nav.tools'), href: '/tools' },
+		{ label: tKey('pages.trig.title') }
+	]}
 />
 
 <BackButton href="/tools" />
@@ -216,7 +224,8 @@
 		<svg viewBox="0 0 200 200" class="shape-glow h-full w-full max-w-xs">
 			<!-- Triangle fill -->
 			<polygon
-				points="{svgPoints.bl.x},{svgPoints.bl.y} {svgPoints.br.x},{svgPoints.br.y} {svgPoints.tl.x},{svgPoints.tl.y}"
+				points="{svgPoints.bl.x},{svgPoints.bl.y} {svgPoints.br.x},{svgPoints.br.y} {svgPoints.tl
+					.x},{svgPoints.tl.y}"
 				fill="rgba(99,102,241,0.08)"
 				stroke="#818CF8"
 				stroke-width="1.5"
@@ -241,7 +250,8 @@
 				{@const arcEndX = svgPoints.br.x - arcRadius * Math.cos(angleRad)}
 				{@const arcEndY = svgPoints.br.y - arcRadius * Math.sin(angleRad)}
 				<path
-					d="M {svgPoints.br.x - arcRadius},{svgPoints.br.y} A {arcRadius},{arcRadius} 0 0,0 {arcEndX},{arcEndY}"
+					d="M {svgPoints.br.x - arcRadius},{svgPoints.br
+						.y} A {arcRadius},{arcRadius} 0 0,0 {arcEndX},{arcEndY}"
 					fill="none"
 					stroke="#818CF8"
 					stroke-width="1"
@@ -440,7 +450,7 @@
 		{#if result}
 			<div>
 				<p class="micro-label mb-3">{tKey('common.dimensions')}</p>
-				<div class="flex flex-wrap gap-3">
+				<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 					<div class="result-chip animate-fade-slide-up">
 						<span class="micro-label text-text-muted">Opposite</span>
 						<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
@@ -461,8 +471,8 @@
 					</div>
 				</div>
 
-				<p class="micro-label mb-3 mt-4">{tKey('pages.trig.angle')}s</p>
-				<div class="flex flex-wrap gap-3">
+				<p class="micro-label mt-4 mb-3">{tKey('pages.trig.angle')}s</p>
+				<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 					<div class="result-chip animate-fade-slide-up">
 						<span class="micro-label text-text-muted">Angle A (θ)</span>
 						<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
@@ -477,14 +487,12 @@
 					</div>
 					<div class="result-chip animate-fade-slide-up">
 						<span class="micro-label text-text-muted">Angle C</span>
-						<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
-							90°
-						</span>
+						<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright"> 90° </span>
 					</div>
 				</div>
 
-				<p class="micro-label mb-3 mt-4">Trig Ratios</p>
-				<div class="flex flex-wrap gap-3">
+				<p class="micro-label mt-4 mb-3">Trig Ratios</p>
+				<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 					<div class="result-chip animate-fade-slide-up">
 						<span class="micro-label text-text-muted">sin(θ)</span>
 						<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
@@ -545,21 +553,33 @@
 <div class="surface-panel mt-4 overflow-x-auto p-4">
 	<table class="w-full border-collapse text-sm">
 		<thead>
-			<tr class="border-b border-border-divider">
-				<th class="px-3 py-2 text-left font-mono text-xs font-medium text-text-muted">{tKey('pages.trig.angle')}</th>
+			<tr class="border-border-divider border-b">
+				<th class="px-3 py-2 text-left font-mono text-xs font-medium text-text-muted"
+					>{tKey('pages.trig.angle')}</th
+				>
 				<th class="px-3 py-2 text-left font-mono text-xs font-medium text-text-muted">Radians</th>
-				<th class="px-3 py-2 text-right font-mono text-xs font-medium text-text-muted">{tKey('pages.trig.sin')}</th>
-				<th class="px-3 py-2 text-right font-mono text-xs font-medium text-text-muted">{tKey('pages.trig.cos')}</th>
-				<th class="px-3 py-2 text-right font-mono text-xs font-medium text-text-muted">{tKey('pages.trig.tan')}</th>
+				<th class="px-3 py-2 text-right font-mono text-xs font-medium text-text-muted"
+					>{tKey('pages.trig.sin')}</th
+				>
+				<th class="px-3 py-2 text-right font-mono text-xs font-medium text-text-muted"
+					>{tKey('pages.trig.cos')}</th
+				>
+				<th class="px-3 py-2 text-right font-mono text-xs font-medium text-text-muted"
+					>{tKey('pages.trig.tan')}</th
+				>
 			</tr>
 		</thead>
 		<tbody>
 			{#each COMMON_ANGLES as entry}
-				<tr class="border-b border-border-divider/50 transition-colors hover:bg-bg-inset/50">
+				<tr class="border-border-divider/50 border-b transition-colors hover:bg-bg-inset/50">
 					<td class="px-3 py-2 font-mono text-text-primary">{entry.degrees}°</td>
 					<td class="px-3 py-2 font-mono text-text-secondary">{entry.radians}</td>
-					<td class="px-3 py-2 text-right font-mono text-text-primary">{formatSinCosValue(entry.sin)}</td>
-					<td class="px-3 py-2 text-right font-mono text-text-primary">{formatSinCosValue(entry.cos)}</td>
+					<td class="px-3 py-2 text-right font-mono text-text-primary"
+						>{formatSinCosValue(entry.sin)}</td
+					>
+					<td class="px-3 py-2 text-right font-mono text-text-primary"
+						>{formatSinCosValue(entry.cos)}</td
+					>
 					<td class="px-3 py-2 text-right font-mono text-text-primary">{formatTanAngle(entry)}</td>
 				</tr>
 			{/each}

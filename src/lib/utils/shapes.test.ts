@@ -80,9 +80,9 @@ describe('2D shape calculations', () => {
 			expect(result.perimeter).toBe(12);
 		});
 
-		it('returns NaN for invalid triangle', () => {
+		it('returns 0 for invalid triangle (safeNumber fallback)', () => {
 			const result = calculateScaleneTriangle(1, 1, 10);
-			expect(Number.isNaN(result.area)).toBe(true);
+			expect(result.area).toBe(0);
 		});
 	});
 

@@ -38,7 +38,7 @@
 	let diagonal1 = $state(10);
 	let diagonal2 = $state(6);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateRhombus>>(calculateRhombus(10, 6));
+	let result = $derived(calculateRhombus(diagonal1, diagonal2));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -70,7 +70,6 @@
 	function handleCalculate() {
 		if (diagonal1 <= 0) diagonal1 = 0.1;
 		if (diagonal2 <= 0) diagonal2 = 0.1;
-		result = calculateRhombus(diagonal1, diagonal2);
 		addToHistory('rhombus', {
 			inputs: `d1=${formatNumber(diagonal1)}, d2=${formatNumber(diagonal2)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -82,7 +81,6 @@
 	function handleReset() {
 		diagonal1 = 10;
 		diagonal2 = 6;
-		result = calculateRhombus(diagonal1, diagonal2);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -139,7 +137,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -262,7 +259,7 @@
 
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

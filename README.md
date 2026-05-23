@@ -106,7 +106,7 @@ services:
   mathsperia:
     build: .
     ports:
-      - "3002:3002"
+      - '3002:3002'
     environment:
       - NODE_ENV=production
       - PORT=3002
@@ -126,11 +126,13 @@ npm run preview
 ## ✨ Smart Features
 
 ### Intelligent Number Formatting
+
 - Displays integers without decimals (e.g., `25` instead of `25.00`)
 - Shows decimals only when needed (e.g., `25.5`, `3.14`)
 - Removes trailing zeros for clean output
 
 ### Responsive SVG Scaling
+
 - Automatically adjusts shape visualization based on input values
 - Handles large numbers gracefully without overflow
 - Maintains visual proportions and clarity
@@ -167,40 +169,42 @@ mathsperia/
 
 ## 🎯 Supported Shapes
 
-| Shape | Inputs | Calculated |
-|-------|--------|------------|
-| **Circle** | Radius | Area, Circumference |
-| **Rectangle** | Length, Width | Area, Perimeter |
-| **Square** | Side | Area, Perimeter |
-| **Triangle** | See triangle types below | Area, Perimeter |
-| **Trapezoid** | Bases (a, b), Height | Area, Perimeter (approx) |
-| **Parallelogram** | Base, Height, Side | Area, Perimeter |
-| **Ellipse** | Semi-major (a), Semi-minor (b) | Area, Perimeter (Ramanujan's) |
-| **Rhombus** | Diagonal 1, Diagonal 2 | Area, Perimeter |
-| **Kite** | Diagonal 1, Diagonal 2 | Area, Perimeter (approx) |
+| Shape             | Inputs                         | Calculated                    |
+| ----------------- | ------------------------------ | ----------------------------- |
+| **Circle**        | Radius                         | Area, Circumference           |
+| **Rectangle**     | Length, Width                  | Area, Perimeter               |
+| **Square**        | Side                           | Area, Perimeter               |
+| **Triangle**      | See triangle types below       | Area, Perimeter               |
+| **Trapezoid**     | Bases (a, b), Height           | Area, Perimeter (approx)      |
+| **Parallelogram** | Base, Height, Side             | Area, Perimeter               |
+| **Ellipse**       | Semi-major (a), Semi-minor (b) | Area, Perimeter (Ramanujan's) |
+| **Rhombus**       | Diagonal 1, Diagonal 2         | Area, Perimeter               |
+| **Kite**          | Diagonal 1, Diagonal 2         | Area, Perimeter (approx)      |
 
 ### 🔺 Triangle Types
 
 Each triangle type has its own calculator with specific formulas:
 
-| Type | Description | Inputs | Special Features |
-|------|-------------|--------|------------------|
-| **Equilateral** | All sides equal | Side length | All angles 60° |
-| **Isosceles** | Two sides equal | Base, Equal side | Auto-validates triangle inequality |
-| **Right** | 90° angle | Base (a), Height (b) | Shows hypotenuse calculation |
-| **Scalene** | All sides different | Side A, B, C | Uses Heron's formula |
+| Type            | Description         | Inputs               | Special Features                   |
+| --------------- | ------------------- | -------------------- | ---------------------------------- |
+| **Equilateral** | All sides equal     | Side length          | All angles 60°                     |
+| **Isosceles**   | Two sides equal     | Base, Equal side     | Auto-validates triangle inequality |
+| **Right**       | 90° angle           | Base (a), Height (b) | Shows hypotenuse calculation       |
+| **Scalene**     | All sides different | Side A, B, C         | Uses Heron's formula               |
 
 ## 🔧 Configuration
 
 ### Port Configuration
 
 Default port is **3002** (Docker) and **5173** (dev). Change in:
+
 - Docker: `Dockerfile` and `docker run -p` command
 - Dev: `vite.config.ts`
 
 ### Adding New Features
 
 To add a new phase (e.g., 3D Geometry):
+
 1. Create new route directory: `src/routes/3d/`
 2. Add calculators: `src/routes/3d/[shape]/+page.svelte`
 3. Update homepage: Add link in `src/routes/+page.svelte`
@@ -222,4 +226,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-**No login required •  Open source**
+**No login required • Open source**

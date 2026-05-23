@@ -4,6 +4,7 @@
 	import BackButton from '$lib/components/BackButton.svelte';
 	import { categoryPageData } from '$lib/utils/seo';
 	import { formatNumber } from '$lib/utils/format';
+	import 'katex/dist/katex.min.css';
 	import katex from 'katex';
 	import { tKey } from '$lib/stores/lang.svelte';
 
@@ -303,7 +304,7 @@
 
 			<div>
 				<p class="micro-label mb-3">{tKey('common.results')}</p>
-				<div class="flex flex-wrap gap-3">
+				<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 					<div class="result-chip">
 						<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 						<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright"
@@ -376,7 +377,7 @@
 
 			<div>
 				<p class="micro-label mb-3">{tKey('common.results')}</p>
-				<div class="flex flex-wrap gap-3">
+				<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 					<div class="result-chip">
 						<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 						<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright"

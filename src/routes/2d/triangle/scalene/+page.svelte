@@ -39,9 +39,7 @@
 	let sideB = $state(8);
 	let sideC = $state(10);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateScaleneTriangle>>(
-		calculateScaleneTriangle(6, 8, 10)
-	);
+	let result = $derived(calculateScaleneTriangle(sideA, sideB, sideC));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -109,7 +107,6 @@
 			error = `Triangle inequality violated: ${whichInequality(sideA, sideB, sideC)}.`;
 			return;
 		}
-		result = calculateScaleneTriangle(sideA, sideB, sideC);
 		addToHistory('triangle-scalene', {
 			inputs: `a=${formatNumber(sideA)}, b=${formatNumber(sideB)}, c=${formatNumber(sideC)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -123,7 +120,6 @@
 		sideB = 8;
 		sideC = 10;
 		error = '';
-		result = calculateScaleneTriangle(sideA, sideB, sideC);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -187,7 +183,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -213,7 +208,9 @@
 
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry2d')}</p>
-	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">{tKey('shapes.scalene-triangle.name')}</h1>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('shapes.scalene-triangle.name')}
+	</h1>
 	<p class="mt-2 text-text-secondary">
 		{tKey('shapes.scalene-triangle.desc')}
 	</p>
@@ -325,7 +322,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

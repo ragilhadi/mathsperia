@@ -37,7 +37,7 @@
 
 	let side = $state(6);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateSquare>>(calculateSquare(6));
+	let result = $derived(calculateSquare(side));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -68,7 +68,6 @@
 
 	function handleCalculate() {
 		if (side <= 0) side = 0.1;
-		result = calculateSquare(side);
 		addToHistory('square', {
 			inputs: `s=${formatNumber(side)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -79,7 +78,6 @@
 
 	function handleReset() {
 		side = 6;
-		result = calculateSquare(side);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -129,7 +127,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -143,7 +140,11 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry2d'), href: '/2d' }, { label: tKey('shapes.square.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry2d'), href: '/2d' },
+		{ label: tKey('shapes.square.name') }
+	]}
 />
 
 <BackButton href="/2d" />
@@ -232,7 +233,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

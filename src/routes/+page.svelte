@@ -87,7 +87,9 @@
 	<!-- 2D Geometry card -->
 	<a href="/2d" class="surface-panel flex cursor-pointer flex-col gap-3 p-6">
 		<span class="micro-label">{tKey('home.shapes2dCount')}</span>
-		<h2 class="font-display text-xl font-semibold text-text-primary">{tKey('home.shapes2dTitle')}</h2>
+		<h2 class="font-display text-xl font-semibold text-text-primary">
+			{tKey('home.shapes2dTitle')}
+		</h2>
 		<p class="text-sm leading-relaxed text-text-secondary">
 			{tKey('home.shapes2dDesc')}
 		</p>
@@ -95,7 +97,9 @@
 	<!-- 3D Geometry card -->
 	<a href="/3d" class="surface-panel flex cursor-pointer flex-col gap-3 p-6">
 		<span class="micro-label">{tKey('home.shapes3dCount')}</span>
-		<h2 class="font-display text-xl font-semibold text-text-primary">{tKey('home.shapes3dTitle')}</h2>
+		<h2 class="font-display text-xl font-semibold text-text-primary">
+			{tKey('home.shapes3dTitle')}
+		</h2>
 		<p class="text-sm leading-relaxed text-text-secondary">
 			{tKey('home.shapes3dDesc')}
 		</p>
@@ -107,7 +111,9 @@
 	<h2 class="micro-label mb-6 text-center">{tKey('home.toolsTitle')}</h2>
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 		<a href="/tools" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
-			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.coordToolsTitle')}</h3>
+			<h3 class="font-display text-lg font-semibold text-text-primary">
+				{tKey('home.coordToolsTitle')}
+			</h3>
 			<p class="text-sm text-text-secondary">
 				{tKey('home.coordToolsDesc')}
 			</p>
@@ -119,7 +125,9 @@
 			</p>
 		</a>
 		<a href="/tools/convert" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
-			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.convertTitle')}</h3>
+			<h3 class="font-display text-lg font-semibold text-text-primary">
+				{tKey('home.convertTitle')}
+			</h3>
 			<p class="text-sm text-text-secondary">
 				{tKey('home.convertDesc')}
 			</p>
@@ -131,13 +139,17 @@
 			</p>
 		</a>
 		<a href="/formulas" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
-			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.formulasTitle')}</h3>
+			<h3 class="font-display text-lg font-semibold text-text-primary">
+				{tKey('home.formulasTitle')}
+			</h3>
 			<p class="text-sm text-text-secondary">
 				{tKey('home.formulasDesc')}
 			</p>
 		</a>
 		<a href="/glossary" class="surface-panel flex cursor-pointer flex-col gap-2 p-5">
-			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.glossaryTitle')}</h3>
+			<h3 class="font-display text-lg font-semibold text-text-primary">
+				{tKey('home.glossaryTitle')}
+			</h3>
 			<p class="text-sm text-text-secondary">
 				{tKey('home.glossaryDesc')}
 			</p>
@@ -156,13 +168,17 @@
 			</p>
 		</div>
 		<div class="surface-panel flex flex-col gap-2 p-5">
-			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.visualTitle')}</h3>
+			<h3 class="font-display text-lg font-semibold text-text-primary">
+				{tKey('home.visualTitle')}
+			</h3>
 			<p class="text-sm text-text-secondary">
 				{tKey('home.visualDesc')}
 			</p>
 		</div>
 		<div class="surface-panel flex flex-col gap-2 p-5">
-			<h3 class="font-display text-lg font-semibold text-text-primary">{tKey('home.preciseTitle')}</h3>
+			<h3 class="font-display text-lg font-semibold text-text-primary">
+				{tKey('home.preciseTitle')}
+			</h3>
 			<p class="text-sm text-text-secondary">
 				{tKey('home.preciseDesc')}
 			</p>

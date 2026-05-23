@@ -4,9 +4,6 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
-/* KaTeX CSS for mathematical formulas */
-@import 'katex/dist/katex.min.css';
-
 /* Mathsperia — Precision Observatory Design System */
 :root {
 	/* Surfaces */

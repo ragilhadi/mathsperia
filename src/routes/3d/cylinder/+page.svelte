@@ -35,7 +35,7 @@
 	let radius = $state(4);
 	let height = $state(10);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateCylinder>>(calculateCylinder(4, 10));
+	let result = $derived(calculateCylinder(radius, height));
 	const BASE_UNIT: Unit = 'cm';
 
 	let displayVolume = $derived(safeNumber(convertVolumeValue(result.volume, BASE_UNIT, unit), 0));
@@ -67,7 +67,6 @@
 	let bottomCy = $derived(100 + svgH / 2);
 
 	function handleCalculate() {
-		result = calculateCylinder(radius, height);
 		addToHistory('cylinder', {
 			inputs: `r=${radius}, h=${height}`,
 			results: `V=${formatNumber(result.volume)}, A=${formatNumber(result.area)}`,
@@ -79,7 +78,6 @@
 	function handleReset() {
 		radius = 4;
 		height = 10;
-		result = calculateCylinder(radius, height);
 	}
 
 	function updateUrl() {
@@ -136,7 +134,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -162,7 +159,8 @@
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry3d')}</p>
 	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
-		{tKey('shapes.cylinder.name')} {tKey('common.calculator')}
+		{tKey('shapes.cylinder.name')}
+		{tKey('common.calculator')}
 	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('shapes.cylinder.desc')}</p>
 </div>
@@ -330,7 +328,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.volume')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
