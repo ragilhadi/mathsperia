@@ -285,7 +285,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 		question: 'A rhombus has side 13 and one diagonal 10. What is the other diagonal?',
 		options: ['24', '20', '12', '26'],
 		correctIndex: 0,
-		explanation: 'Half-diagonals form a right triangle: (d₁/2)² + (d₂/2)² = 13² → 5² + (d₂/2)² = 169 → d₂/2 = 12 → d₂ = 24',
+		explanation:
+			'Half-diagonals form a right triangle: (d₁/2)² + (d₂/2)² = 13² → 5² + (d₂/2)² = 169 → d₂/2 = 12 → d₂ = 24',
 		difficulty: 'hard'
 	},
 	{
@@ -300,10 +301,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 	{
 		id: 'q33',
 		shapeId: 'circle',
-		question: 'A semicircle has radius 7. What is the area of the full circle minus the semicircle?',
+		question:
+			'A semicircle has radius 7. What is the area of the full circle minus the semicircle?',
 		options: ['49π/2 ≈ 76.97', '98π', '49π', '14π'],
 		correctIndex: 0,
-		explanation: 'Full circle area = π(7²) = 49π. Semicircle area = 49π/2. Difference = 49π - 49π/2 = 49π/2',
+		explanation:
+			'Full circle area = π(7²) = 49π. Semicircle area = 49π/2. Difference = 49π - 49π/2 = 49π/2',
 		difficulty: 'hard'
 	},
 	{
