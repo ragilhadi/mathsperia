@@ -46,7 +46,9 @@
 	structuredData={pageData}
 />
 
-<Breadcrumb items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry3d') }]} />
+<Breadcrumb
+	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry3d') }]}
+/>
 <p class="micro-label mb-3">{tKey('common.geometry3d')}</p>
 <h1 class="mb-2 font-display text-4xl font-bold tracking-tight text-text-primary">
 	{tKey('pages.shapes3d.title')}

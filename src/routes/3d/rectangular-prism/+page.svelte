@@ -37,9 +37,7 @@
 	let width = $state(4);
 	let height = $state(3);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateRectangularPrism>>(
-		calculateRectangularPrism(5, 4, 3)
-	);
+	let result = $derived(calculateRectangularPrism(length, width, height));
 	const BASE_UNIT: Unit = 'cm';
 
 	let displayVolume = $derived(safeNumber(convertVolumeValue(result.volume, BASE_UNIT, unit), 0));
@@ -82,7 +80,6 @@
 	let v7 = $derived(iso(0, width, height, scale));
 
 	function handleCalculate() {
-		result = calculateRectangularPrism(length, width, height);
 		addToHistory('rectangular-prism', {
 			inputs: `l=${length}, w=${width}, h=${height}`,
 			results: `V=${formatNumber(result.volume)}, A=${formatNumber(result.area)}`,
@@ -95,7 +92,6 @@
 		length = 5;
 		width = 4;
 		height = 3;
-		result = calculateRectangularPrism(length, width, height);
 	}
 
 	function updateUrl() {
@@ -159,7 +155,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -185,7 +180,8 @@
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry3d')}</p>
 	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
-		{tKey('shapes.rectangular-prism.name')} {tKey('common.calculator')}
+		{tKey('shapes.rectangular-prism.name')}
+		{tKey('common.calculator')}
 	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('shapes.rectangular-prism.desc')}</p>
 </div>
@@ -349,7 +345,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.volume')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import 'katex/dist/katex.min.css';
 	import katex from 'katex';
 
 	interface Props {
@@ -36,8 +37,7 @@
 			stroke-linecap="round"
 			stroke-linejoin="round"
 			class="transition-transform duration-200"
-			class:rotate-90={showSteps}
-			><polyline points="9 18 15 12 9 6"></polyline></svg
+			class:rotate-90={showSteps}><polyline points="9 18 15 12 9 6"></polyline></svg
 		>
 		{showSteps ? 'Hide steps' : 'Show steps'}
 	</button>

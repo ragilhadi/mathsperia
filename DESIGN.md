@@ -35,62 +35,62 @@ All tokens are defined in `src/app.css` and exposed to Tailwind via `@theme inli
 
 ### Base Surfaces
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-bg-base` | `#07090F` | Page canvas — near-void depth |
-| `--color-bg-surface` | `#0D1117` | Main content background |
-| `--color-bg-elevated` | `#141B2D` | Cards, panels, dropdowns |
-| `--color-bg-overlay` | `#1C2540` | Hover states, tooltips, modals |
-| `--color-bg-inset` | `#090D16` | Input backgrounds, code blocks |
+| Token                 | Value     | Usage                          |
+| --------------------- | --------- | ------------------------------ |
+| `--color-bg-base`     | `#07090F` | Page canvas — near-void depth  |
+| `--color-bg-surface`  | `#0D1117` | Main content background        |
+| `--color-bg-elevated` | `#141B2D` | Cards, panels, dropdowns       |
+| `--color-bg-overlay`  | `#1C2540` | Hover states, tooltips, modals |
+| `--color-bg-inset`    | `#090D16` | Input backgrounds, code blocks |
 
 ### Text
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-text-primary` | `#F1F5F9` | Headings, labels, important copy |
-| `--color-text-secondary` | `#94A3B8` | Body copy, descriptions |
-| `--color-text-muted` | `#475569` | Placeholders, disabled states |
-| `--color-text-inverse` | `#07090F` | Text on bright accent backgrounds |
+| Token                    | Value     | Usage                             |
+| ------------------------ | --------- | --------------------------------- |
+| `--color-text-primary`   | `#F1F5F9` | Headings, labels, important copy  |
+| `--color-text-secondary` | `#94A3B8` | Body copy, descriptions           |
+| `--color-text-muted`     | `#475569` | Placeholders, disabled states     |
+| `--color-text-inverse`   | `#07090F` | Text on bright accent backgrounds |
 
 ### Accent — Indigo (Primary)
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-indigo-dim` | `#312E81` | Subtle tints, active backgrounds |
-| `--color-indigo-mid` | `#4F46E5` | Interactive elements, links |
-| `--color-indigo` | `#818CF8` | Primary accent — buttons, highlights |
-| `--color-indigo-bright` | `#C7D2FE` | Hover states on indigo elements |
+| Token                   | Value     | Usage                                |
+| ----------------------- | --------- | ------------------------------------ |
+| `--color-indigo-dim`    | `#312E81` | Subtle tints, active backgrounds     |
+| `--color-indigo-mid`    | `#4F46E5` | Interactive elements, links          |
+| `--color-indigo`        | `#818CF8` | Primary accent — buttons, highlights |
+| `--color-indigo-bright` | `#C7D2FE` | Hover states on indigo elements      |
 
 ### Accent — Emerald (Results / Success)
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-emerald-dim` | `#064E3B` | Result backgrounds |
-| `--color-emerald` | `#34D399` | Calculated results, success states |
-| `--color-emerald-bright` | `#A7F3D0` | Highlighted result values |
+| Token                    | Value     | Usage                              |
+| ------------------------ | --------- | ---------------------------------- |
+| `--color-emerald-dim`    | `#064E3B` | Result backgrounds                 |
+| `--color-emerald`        | `#34D399` | Calculated results, success states |
+| `--color-emerald-bright` | `#A7F3D0` | Highlighted result values          |
 
 ### Accent — Amber (Formulas / Math)
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-amber-dim` | `#451A03` | Formula panel tint |
-| `--color-amber` | `#FCD34D` | Formula symbols, KaTeX output |
-| `--color-amber-bright` | `#FEF3C7` | Important formula parts |
+| Token                  | Value     | Usage                         |
+| ---------------------- | --------- | ----------------------------- |
+| `--color-amber-dim`    | `#451A03` | Formula panel tint            |
+| `--color-amber`        | `#FCD34D` | Formula symbols, KaTeX output |
+| `--color-amber-bright` | `#FEF3C7` | Important formula parts       |
 
 ### Accent — Rose (Errors / Destructive)
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-rose` | `#F87171` | Error messages, invalid inputs |
-| `--color-rose-dim` | `#450A0A` | Error state backgrounds |
+| Token              | Value     | Usage                          |
+| ------------------ | --------- | ------------------------------ |
+| `--color-rose`     | `#F87171` | Error messages, invalid inputs |
+| `--color-rose-dim` | `#450A0A` | Error state backgrounds        |
 
 ### Borders & Dividers
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-border-subtle` | `rgba(99, 102, 241, 0.10)` | Default panel borders |
-| `--color-border-default` | `rgba(99, 102, 241, 0.20)` | Emphasized borders, input rings |
-| `--color-border-strong` | `rgba(99, 102, 241, 0.40)` | Focus rings, active card borders |
+| Token                    | Value                       | Usage                              |
+| ------------------------ | --------------------------- | ---------------------------------- |
+| `--color-border-subtle`  | `rgba(99, 102, 241, 0.10)`  | Default panel borders              |
+| `--color-border-default` | `rgba(99, 102, 241, 0.20)`  | Emphasized borders, input rings    |
+| `--color-border-strong`  | `rgba(99, 102, 241, 0.40)`  | Focus rings, active card borders   |
 | `--color-border-divider` | `rgba(148, 163, 184, 0.08)` | Horizontal rules, section dividers |
 
 ---
@@ -104,24 +104,24 @@ All tokens are defined in `src/app.css` and exposed to Tailwind via `@theme inli
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body:    'Inter', system-ui, sans-serif;
-  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+	--font-display: 'Space Grotesk', system-ui, sans-serif;
+	--font-body: 'Inter', system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 ```
 
 ### Scale & Usage
 
-| Role | Font | Size | Weight | Tracking | Usage |
-|---|---|---|---|---|---|
-| Hero Title | Space Grotesk | `text-5xl` / `text-6xl` | 700 | `-0.03em` | Page hero, category titles |
-| Section Heading | Space Grotesk | `text-3xl` | 700 | `-0.02em` | Shape page title |
-| Card Title | Space Grotesk | `text-xl` | 600 | `-0.01em` | Shape card headings |
-| Body | Inter | `text-base` | 400 | `0` | Descriptions, labels |
-| Small / Caption | Inter | `text-sm` | 400 | `0.01em` | Helper text, metadata |
-| Micro Label | Inter | `text-xs` | 600 | `0.08em` uppercase | Eyebrow labels, badges |
-| Number / Result | JetBrains Mono | `text-2xl` | 500 | `-0.01em` | Calculated values |
-| Formula Variable | JetBrains Mono | `text-sm` | 400 | `0` | Input labels, variable names |
+| Role             | Font           | Size                    | Weight | Tracking           | Usage                        |
+| ---------------- | -------------- | ----------------------- | ------ | ------------------ | ---------------------------- |
+| Hero Title       | Space Grotesk  | `text-5xl` / `text-6xl` | 700    | `-0.03em`          | Page hero, category titles   |
+| Section Heading  | Space Grotesk  | `text-3xl`              | 700    | `-0.02em`          | Shape page title             |
+| Card Title       | Space Grotesk  | `text-xl`               | 600    | `-0.01em`          | Shape card headings          |
+| Body             | Inter          | `text-base`             | 400    | `0`                | Descriptions, labels         |
+| Small / Caption  | Inter          | `text-sm`               | 400    | `0.01em`           | Helper text, metadata        |
+| Micro Label      | Inter          | `text-xs`               | 600    | `0.08em` uppercase | Eyebrow labels, badges       |
+| Number / Result  | JetBrains Mono | `text-2xl`              | 500    | `-0.01em`          | Calculated values            |
+| Formula Variable | JetBrains Mono | `text-sm`               | 400    | `0`                | Input labels, variable names |
 
 ### Guidelines
 
@@ -137,82 +137,99 @@ All tokens are defined in `src/app.css` and exposed to Tailwind via `@theme inli
 Defined in `src/app.css`:
 
 ### `.geo-grid`
+
 Subtle dot-grid background that tiles across the page canvas. Used on `<body>` or hero sections.
+
 ```css
 .geo-grid {
-  background-image: radial-gradient(circle, rgba(99, 102, 241, 0.15) 1px, transparent 1px);
-  background-size: 28px 28px;
+	background-image: radial-gradient(circle, rgba(99, 102, 241, 0.15) 1px, transparent 1px);
+	background-size: 28px 28px;
 }
 ```
 
 ### `.surface-panel`
+
 Standard elevated panel for cards and calculators. Uses layered box-shadow for depth.
+
 ```css
 .surface-panel {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 1rem;
-  box-shadow:
-    0 0 0 1px rgba(99, 102, 241, 0.05),
-    0 4px 24px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+	background: var(--color-bg-elevated);
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 1rem;
+	box-shadow:
+		0 0 0 1px rgba(99, 102, 241, 0.05),
+		0 4px 24px rgba(0, 0, 0, 0.4),
+		inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 ```
 
 ### `.glow-panel`
+
 Used for the SVG shape visualization container. Produces a cool inner-light effect.
+
 ```css
 .glow-panel {
-  background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.06) 0%, var(--color-bg-inset) 70%);
-  border: 1px solid var(--color-border-default);
-  border-radius: 1rem;
-  box-shadow: inset 0 0 40px rgba(99, 102, 241, 0.05);
+	background: radial-gradient(
+		ellipse at center,
+		rgba(99, 102, 241, 0.06) 0%,
+		var(--color-bg-inset) 70%
+	);
+	border: 1px solid var(--color-border-default);
+	border-radius: 1rem;
+	box-shadow: inset 0 0 40px rgba(99, 102, 241, 0.05);
 }
 ```
 
 ### `.formula-panel`
+
 Amber-tinted container for KaTeX formula blocks.
+
 ```css
 .formula-panel {
-  background: linear-gradient(135deg, rgba(120, 53, 15, 0.20) 0%, rgba(69, 26, 3, 0.15) 100%);
-  border: 1px solid rgba(251, 191, 36, 0.20);
-  border-radius: 0.75rem;
-  padding: 1rem 1.25rem;
+	background: linear-gradient(135deg, rgba(120, 53, 15, 0.2) 0%, rgba(69, 26, 3, 0.15) 100%);
+	border: 1px solid rgba(251, 191, 36, 0.2);
+	border-radius: 0.75rem;
+	padding: 1rem 1.25rem;
 }
 ```
 
 ### `.result-chip`
+
 Used around calculated output values.
+
 ```css
 .result-chip {
-  background: rgba(6, 78, 59, 0.30);
-  border: 1px solid rgba(52, 211, 153, 0.25);
-  border-radius: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  font-family: var(--font-mono);
-  color: var(--color-emerald-bright);
+	background: rgba(6, 78, 59, 0.3);
+	border: 1px solid rgba(52, 211, 153, 0.25);
+	border-radius: 0.5rem;
+	padding: 0.25rem 0.75rem;
+	font-family: var(--font-mono);
+	color: var(--color-emerald-bright);
 }
 ```
 
 ### `.micro-label`
+
 Uppercase eyebrow labels above section headings.
+
 ```css
 .micro-label {
-  font-family: var(--font-body);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-indigo);
+	font-family: var(--font-body);
+	font-size: 0.6875rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--color-indigo);
 }
 ```
 
 ### `.shape-glow` (SVG stroke utility)
+
 Applied to SVG shape strokes to produce the signature glow effect.
+
 ```css
 .shape-glow {
-  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6))
-          drop-shadow(0 0 2px rgba(199, 210, 254, 0.4));
+	filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6)) drop-shadow(0 0 2px rgba(199, 210, 254, 0.4));
 }
 ```
 
@@ -267,10 +284,7 @@ Two-column layout on desktop, stacked on mobile:
 ```css
 /* Tailwind classes */
 .input-field {
-  @apply bg-bg-inset border border-border-default rounded-lg px-4 py-2.5
-         font-mono text-text-primary placeholder:text-text-muted
-         focus:outline-none focus:border-border-strong focus:ring-2 focus:ring-indigo/20
-         transition-colors duration-150;
+	@apply border-border-default focus:border-border-strong rounded-lg border bg-bg-inset px-4 py-2.5 font-mono text-text-primary transition-colors duration-150 placeholder:text-text-muted focus:ring-2 focus:ring-indigo/20 focus:outline-none;
 }
 ```
 
@@ -316,12 +330,12 @@ Home  /  2D Geometry  /  Circle
 
 ```svelte
 <!-- src/routes/+layout.svelte -->
-<body class="bg-bg-surface geo-grid min-h-screen text-text-primary font-body antialiased">
-  <Header />
-  <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
-    <slot />
-  </main>
-  <Footer />
+<body class="geo-grid min-h-screen bg-bg-surface font-body text-text-primary antialiased">
+	<Header />
+	<main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+		<slot />
+	</main>
+	<Footer />
 </body>
 ```
 
@@ -334,14 +348,14 @@ Home  /  2D Geometry  /  Circle
 
 ## Motion & Interaction
 
-| Interaction | CSS |
-|---|---|
-| Card hover lift | `transition: transform 150ms ease, box-shadow 150ms ease` + `hover:-translate-y-1` |
-| Button press | `active:scale-[0.97]` |
-| Input focus ring | `focus:ring-2 focus:ring-indigo/20 focus:border-border-strong` |
-| Result appearance | `@keyframes fadeSlideUp` — `opacity: 0 → 1`, `translateY: 6px → 0` over 200ms |
-| SVG update | Svelte `tweened()` store for smooth dimension transitions on the SVG viewport |
-| Page enter | `animate-fade-in` — `opacity: 0 → 1` over 300ms, staggered per card |
+| Interaction       | CSS                                                                                |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| Card hover lift   | `transition: transform 150ms ease, box-shadow 150ms ease` + `hover:-translate-y-1` |
+| Button press      | `active:scale-[0.97]`                                                              |
+| Input focus ring  | `focus:ring-2 focus:ring-indigo/20 focus:border-border-strong`                     |
+| Result appearance | `@keyframes fadeSlideUp` — `opacity: 0 → 1`, `translateY: 6px → 0` over 200ms      |
+| SVG update        | Svelte `tweened()` store for smooth dimension transitions on the SVG viewport      |
+| Page enter        | `animate-fade-in` — `opacity: 0 → 1` over 300ms, staggered per card                |
 
 Keep motion purposeful and brief. No looping animations, no parallax, no animated backgrounds. The geometry should be still and precise.
 
@@ -375,13 +389,13 @@ The SVG visualizations are the heart of the UI — they need to look premium:
 
 ## What to Avoid
 
-| ❌ Avoid | ✅ Use instead |
-|---|---|
-| Raw cyan `#06b6d4` as primary | Indigo `#818CF8` — more refined |
-| Harsh neon glow on everything | Glow reserved for SVG shapes only |
-| Pure black `#000000` background | `#07090F` — has depth without being void |
-| White text directly on dark | `#F1F5F9` — slightly warm off-white |
-| Generic gray cards | Layered `.surface-panel` with indigo border tint |
-| Bold colored section headers | `micro-label` eyebrows + large Space Grotesk heading |
-| Flat number outputs in sans font | Always `font-mono` for numeric values |
-| Decorative animated gradients | Static grid texture, motion only on interaction |
+| ❌ Avoid                         | ✅ Use instead                                       |
+| -------------------------------- | ---------------------------------------------------- |
+| Raw cyan `#06b6d4` as primary    | Indigo `#818CF8` — more refined                      |
+| Harsh neon glow on everything    | Glow reserved for SVG shapes only                    |
+| Pure black `#000000` background  | `#07090F` — has depth without being void             |
+| White text directly on dark      | `#F1F5F9` — slightly warm off-white                  |
+| Generic gray cards               | Layered `.surface-panel` with indigo border tint     |
+| Bold colored section headers     | `micro-label` eyebrows + large Space Grotesk heading |
+| Flat number outputs in sans font | Always `font-mono` for numeric values                |
+| Decorative animated gradients    | Static grid texture, motion only on interaction      |

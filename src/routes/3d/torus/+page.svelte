@@ -41,7 +41,7 @@
 	let majorRadius = $state(10);
 	let minorRadius = $state(3);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateTorus>>(calculateTorus(10, 3));
+	let result = $derived(calculateTorus(majorRadius, minorRadius));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -92,7 +92,6 @@
 	function handleCalculate() {
 		if (majorRadius <= 0) majorRadius = 0.1;
 		if (minorRadius <= 0) minorRadius = 0.1;
-		result = calculateTorus(majorRadius, minorRadius);
 		addToHistory('torus', {
 			inputs: `R=${formatNumber(majorRadius)}, r=${formatNumber(minorRadius)}`,
 			results: `V=${formatNumber(result.volume)}, A=${formatNumber(result.area)}`,
@@ -104,7 +103,6 @@
 	function handleReset() {
 		majorRadius = 10;
 		minorRadius = 3;
-		result = calculateTorus(majorRadius, minorRadius);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -161,7 +159,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 		setLastUnit(unit);
 	});
@@ -176,14 +173,20 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry3d'), href: '/3d' }, { label: tKey('shapes.torus.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry3d'), href: '/3d' },
+		{ label: tKey('shapes.torus.name') }
+	]}
 />
 
 <BackButton href="/3d" />
 
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry3d')}</p>
-	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">{tKey('shapes.torus.name')} Calculator</h1>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('shapes.torus.name')} Calculator
+	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('shapes.torus.desc')}</p>
 </div>
 
@@ -325,7 +328,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.volume')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

@@ -38,7 +38,7 @@
 	let semiMajor = $state(8);
 	let semiMinor = $state(5);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateEllipse>>(calculateEllipse(8, 5));
+	let result = $derived(calculateEllipse(semiMajor, semiMinor));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -69,7 +69,6 @@
 	function handleCalculate() {
 		if (semiMajor <= 0) semiMajor = 0.1;
 		if (semiMinor <= 0) semiMinor = 0.1;
-		result = calculateEllipse(semiMajor, semiMinor);
 		addToHistory('ellipse', {
 			inputs: `a=${formatNumber(semiMajor)}, b=${formatNumber(semiMinor)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -81,7 +80,6 @@
 	function handleReset() {
 		semiMajor = 8;
 		semiMinor = 5;
-		result = calculateEllipse(semiMajor, semiMinor);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -138,7 +136,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -274,7 +271,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

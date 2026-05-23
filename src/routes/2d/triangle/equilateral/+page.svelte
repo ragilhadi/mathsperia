@@ -38,9 +38,7 @@
 
 	let side = $state(8);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateEquilateralTriangle>>(
-		calculateEquilateralTriangle(8)
-	);
+	let result = $derived(calculateEquilateralTriangle(side));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -70,7 +68,6 @@
 
 	function handleCalculate() {
 		if (side <= 0) side = 0.1;
-		result = calculateEquilateralTriangle(side);
 		addToHistory('triangle-equilateral', {
 			inputs: `s=${formatNumber(side)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -81,7 +78,6 @@
 
 	function handleReset() {
 		side = 8;
-		result = calculateEquilateralTriangle(side);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -131,7 +127,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -145,7 +140,11 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry2d'), href: '/2d' }, { label: tKey('shapes.equilateral-triangle.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry2d'), href: '/2d' },
+		{ label: tKey('shapes.equilateral-triangle.name') }
+	]}
 />
 
 <BackButton href="/2d/triangle" />
@@ -237,7 +236,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

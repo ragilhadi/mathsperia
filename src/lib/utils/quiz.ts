@@ -147,7 +147,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 	{
 		id: 'q16',
 		shapeId: 'triangle',
-		question: 'A scalene triangle has sides 5, 6, and 7. What is its area? (Heron\'s formula)',
+		question: "A scalene triangle has sides 5, 6, and 7. What is its area? (Heron's formula)",
 		options: ['6√6 ≈ 14.70', '21', '30', '18'],
 		correctIndex: 0,
 		explanation: 's = (5+6+7)/2 = 9. A = √(9×4×3×2) = √216 = 6√6 ≈ 14.70',
@@ -188,6 +188,189 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 		correctIndex: 0,
 		explanation: 'A = πab → 20π = π × 5 × b → b = 4',
 		difficulty: 'hard'
+	},
+	{
+		id: 'q21',
+		shapeId: 'circle',
+		question: 'What is the diameter of a circle with circumference 10π?',
+		options: ['10', '5', '20', '25'],
+		correctIndex: 0,
+		explanation: 'C = πd → 10π = πd → d = 10',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q22',
+		shapeId: 'circle',
+		question: 'A circle has area 25π. What is its circumference?',
+		options: ['10π', '5π', '25π', '50π'],
+		correctIndex: 0,
+		explanation: 'A = πr² → 25π = πr² → r = 5. C = 2πr = 10π',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q23',
+		shapeId: 'square',
+		question: 'What is the diagonal of a square with side length 8?',
+		options: ['8√2', '16', '8', '4√2'],
+		correctIndex: 0,
+		explanation: 'd = s√2 = 8√2 ≈ 11.31',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q24',
+		shapeId: 'square',
+		question: 'A square has diagonal 14√2. What is its area?',
+		options: ['196', '392', '98', '28'],
+		correctIndex: 0,
+		explanation: 'd = s√2 → s = 14. A = s² = 196',
+		difficulty: 'hard'
+	},
+	{
+		id: 'q25',
+		shapeId: 'rectangle',
+		question: 'A rectangle has area 48 and length 8. What is its perimeter?',
+		options: ['28', '24', '32', '16'],
+		correctIndex: 0,
+		explanation: 'w = 48/8 = 6. P = 2(8 + 6) = 28',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q26',
+		shapeId: 'triangle',
+		question: 'An isosceles right triangle has legs of length 5. What is the area?',
+		options: ['12.5', '25', '10', '5√2'],
+		correctIndex: 0,
+		explanation: 'A = ½ × 5 × 5 = 12.5',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q27',
+		shapeId: 'triangle',
+		question: 'A 30-60-90 triangle has a hypotenuse of 10. What is the length of the shorter leg?',
+		options: ['5', '5√3', '10', '10√3'],
+		correctIndex: 0,
+		explanation: 'In a 30-60-90 triangle, the shorter leg = hypotenuse / 2 = 10 / 2 = 5',
+		difficulty: 'hard'
+	},
+	{
+		id: 'q28',
+		shapeId: 'trapezoid',
+		question: 'A trapezoid has area 84, height 7, and one base 14. What is the other base?',
+		options: ['10', '8', '12', '6'],
+		correctIndex: 0,
+		explanation: 'A = ½(a+b)h → 84 = ½(14+b)×7 → 14+b = 24 → b = 10',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q29',
+		shapeId: 'parallelogram',
+		question: 'A parallelogram has sides 8 and 5 with area 32. What is its height?',
+		options: ['4', '5', '8', '6.4'],
+		correctIndex: 0,
+		explanation: 'A = b × h → 32 = 8 × h → h = 4',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q30',
+		shapeId: 'ellipse',
+		question: 'An ellipse has semi-axes 4 and 6. What is the approximate area?',
+		options: ['75.40', '24π', '48', '37.70'],
+		correctIndex: 0,
+		explanation: 'A = πab = π × 4 × 6 = 24π ≈ 75.40',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q31',
+		shapeId: 'rhombus',
+		question: 'A rhombus has side 13 and one diagonal 10. What is the other diagonal?',
+		options: ['24', '20', '12', '26'],
+		correctIndex: 0,
+		explanation:
+			'Half-diagonals form a right triangle: (d₁/2)² + (d₂/2)² = 13² → 5² + (d₂/2)² = 169 → d₂/2 = 12 → d₂ = 24',
+		difficulty: 'hard'
+	},
+	{
+		id: 'q32',
+		shapeId: 'kite',
+		question: 'A kite has side lengths 5 and 7 with diagonals 8 and 12. What is its perimeter?',
+		options: ['24', '20', '28', '16'],
+		correctIndex: 0,
+		explanation: 'A kite has two pairs of equal sides. Perimeter = 2(5) + 2(7) = 10 + 14 = 24',
+		difficulty: 'easy'
+	},
+	{
+		id: 'q33',
+		shapeId: 'circle',
+		question:
+			'A semicircle has radius 7. What is the area of the full circle minus the semicircle?',
+		options: ['49π/2 ≈ 76.97', '98π', '49π', '14π'],
+		correctIndex: 0,
+		explanation:
+			'Full circle area = π(7²) = 49π. Semicircle area = 49π/2. Difference = 49π - 49π/2 = 49π/2',
+		difficulty: 'hard'
+	},
+	{
+		id: 'q34',
+		shapeId: 'square',
+		question: 'What is the perimeter of a square inscribed in a circle of radius 5?',
+		options: ['20√2', '40', '20', '10√2'],
+		correctIndex: 0,
+		explanation: 'Diagonal = 2r = 10. Side = 10/√2 = 5√2. Perimeter = 4 × 5√2 = 20√2',
+		difficulty: 'hard'
+	},
+	{
+		id: 'q35',
+		shapeId: 'rectangle',
+		question: 'A rectangle has diagonal √41 and width 5. What is its area?',
+		options: ['20', '25', '41', '15'],
+		correctIndex: 0,
+		explanation: 'l = √(41 - 25) = √16 = 4. A = 4 × 5 = 20',
+		difficulty: 'hard'
+	},
+	{
+		id: 'q36',
+		shapeId: 'trapezoid',
+		question: 'An isosceles trapezoid has bases 12 and 8, and area 40. What is its height?',
+		options: ['4', '5', '8', '10'],
+		correctIndex: 0,
+		explanation: 'A = ½(a+b)h → 40 = ½(12+8)h → 40 = 10h → h = 4',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q37',
+		shapeId: 'rhombus',
+		question: 'A rhombus has area 60 and one diagonal 12. What is the other diagonal?',
+		options: ['10', '12', '5', '20'],
+		correctIndex: 0,
+		explanation: 'A = (d₁ × d₂)/2 → 60 = (12 × d₂)/2 → d₂ = 10',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q38',
+		shapeId: 'parallelogram',
+		question: 'A parallelogram has area 45 and height 9. What is the base length?',
+		options: ['5', '9', '15', '3'],
+		correctIndex: 0,
+		explanation: 'A = b × h → 45 = b × 9 → b = 5',
+		difficulty: 'easy'
+	},
+	{
+		id: 'q39',
+		shapeId: 'kite',
+		question: 'A kite has area 36 and one diagonal 9. What is the other diagonal?',
+		options: ['8', '6', '12', '4'],
+		correctIndex: 0,
+		explanation: 'A = (d₁ × d₂)/2 → 36 = (9 × d₂)/2 → d₂ = 8',
+		difficulty: 'medium'
+	},
+	{
+		id: 'q40',
+		shapeId: 'triangle',
+		question: 'A triangle has base 10 and area 35. What is its height?',
+		options: ['7', '3.5', '14', '5'],
+		correctIndex: 0,
+		explanation: 'A = ½bh → 35 = ½(10)h → h = 7',
+		difficulty: 'easy'
 	}
 ];
 

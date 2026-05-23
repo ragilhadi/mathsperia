@@ -41,7 +41,7 @@
 	let unit = $state<Unit>(getLastUnit());
 	const BASE_UNIT: Unit = 'cm';
 	const offsetX = 20;
-	let result = $state<ReturnType<typeof calculateParallelogram>>(calculateParallelogram(8, 5, 6));
+	let result = $derived(calculateParallelogram(base, height, side));
 
 	let scaleFactor = $derived(Math.max(base, height) / 8);
 	let svgBase = $derived(clamp((base / scaleFactor) * 12, 50, 140));
@@ -74,7 +74,6 @@
 		if (base <= 0) base = 0.1;
 		if (height <= 0) height = 0.1;
 		if (side <= 0) side = 0.1;
-		result = calculateParallelogram(base, height, side);
 		addToHistory('parallelogram', {
 			inputs: `b=${formatNumber(base)}, h=${formatNumber(height)}, s=${formatNumber(side)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -87,7 +86,6 @@
 		base = 8;
 		height = 5;
 		side = 6;
-		result = calculateParallelogram(base, height, side);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -151,7 +149,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -279,7 +276,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

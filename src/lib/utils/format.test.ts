@@ -17,7 +17,7 @@ describe('formatNumber', () => {
 
 	it('removes trailing zeros', () => {
 		expect(formatNumber(2.0)).toBe('2');
-		expect(formatNumber(2.50)).toBe('2.5');
+		expect(formatNumber(2.5)).toBe('2.5');
 	});
 
 	it('respects custom maxDecimals', () => {

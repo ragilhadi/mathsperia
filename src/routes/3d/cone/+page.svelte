@@ -40,7 +40,7 @@
 	let radius = $state(5);
 	let height = $state(12);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateCone>>(calculateCone(5, 12));
+	let result = $derived(calculateCone(radius, height));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -77,7 +77,6 @@
 	function handleCalculate() {
 		if (radius <= 0) radius = 0.1;
 		if (height <= 0) height = 0.1;
-		result = calculateCone(radius, height);
 		addToHistory('cone', {
 			inputs: `r=${formatNumber(radius)}, h=${formatNumber(height)}`,
 			results: `V=${formatNumber(result.volume)}, A=${formatNumber(result.area)}`,
@@ -89,7 +88,6 @@
 	function handleReset() {
 		radius = 5;
 		height = 12;
-		result = calculateCone(radius, height);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -146,7 +144,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -160,14 +157,21 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry3d'), href: '/3d' }, { label: tKey('shapes.cone.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry3d'), href: '/3d' },
+		{ label: tKey('shapes.cone.name') }
+	]}
 />
 
 <BackButton href="/3d" />
 
 <div class="mb-8">
 	<p class="micro-label mb-2">{tKey('common.geometry3d')}</p>
-	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">{tKey('shapes.cone.name')} {tKey('common.calculator')}</h1>
+	<h1 class="font-display text-4xl font-bold tracking-tight text-text-primary">
+		{tKey('shapes.cone.name')}
+		{tKey('common.calculator')}
+	</h1>
 	<p class="mt-2 text-text-secondary">{tKey('shapes.cone.desc')}</p>
 </div>
 
@@ -306,7 +310,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.volume')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

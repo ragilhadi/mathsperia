@@ -38,7 +38,7 @@
 	let length = $state(8);
 	let width = $state(5);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateRectangle>>(calculateRectangle(8, 5));
+	let result = $derived(calculateRectangle(length, width));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -72,7 +72,6 @@
 	function handleCalculate() {
 		if (length <= 0) length = 0.1;
 		if (width <= 0) width = 0.1;
-		result = calculateRectangle(length, width);
 		addToHistory('rectangle', {
 			inputs: `l=${formatNumber(length)}, w=${formatNumber(width)}`,
 			results: `A=${formatNumber(result.area)}, P=${formatNumber(result.perimeter)}`,
@@ -84,7 +83,6 @@
 	function handleReset() {
 		length = 8;
 		width = 5;
-		result = calculateRectangle(length, width);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -141,7 +139,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -155,7 +152,11 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry2d'), href: '/2d' }, { label: tKey('shapes.rectangle.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry2d'), href: '/2d' },
+		{ label: tKey('shapes.rectangle.name') }
+	]}
 />
 
 <BackButton href="/2d" />
@@ -273,7 +274,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

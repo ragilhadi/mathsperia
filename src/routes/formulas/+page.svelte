@@ -2,6 +2,7 @@
 	import SeoHead from '$lib/components/SeoHead.svelte';
 	import { categoryPageData } from '$lib/utils/seo';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import 'katex/dist/katex.min.css';
 	import katex from 'katex';
 	import { tKey } from '$lib/stores/lang.svelte';
 

@@ -356,7 +356,11 @@
 	<div class="animate-fade-slide-up">
 		<div class="surface-panel mb-6 p-8 text-center">
 			<p class="micro-label mb-4">{tKey('pages.quiz2d.quizComplete')}</p>
-			<div class="result-chip mb-4 inline-flex flex-col items-center px-8 py-5">
+			<div
+				class="result-chip mb-4 inline-flex flex-col items-center px-8 py-5"
+				aria-live="polite"
+				role="status"
+			>
 				<span class="font-mono text-4xl font-medium text-emerald-bright">
 					{correctCount}/{totalQuestions}
 				</span>

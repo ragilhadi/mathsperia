@@ -22,8 +22,7 @@
 		urlPath: '/tools/midpoint',
 		category: '2D',
 		resultType: 'midpoint',
-		keywords:
-			'midpoint calculator, midpoint of two points, coordinate geometry, midpoint formula'
+		keywords: 'midpoint calculator, midpoint of two points, coordinate geometry, midpoint formula'
 	});
 
 	let x1 = $state(0);
@@ -87,10 +86,22 @@
 		const py1 = sp.get('y1');
 		const px2 = sp.get('x2');
 		const py2 = sp.get('y2');
-		if (px1 !== null) { const v = parseFloat(px1); if (!isNaN(v)) x1 = v; }
-		if (py1 !== null) { const v = parseFloat(py1); if (!isNaN(v)) y1 = v; }
-		if (px2 !== null) { const v = parseFloat(px2); if (!isNaN(v)) x2 = v; }
-		if (py2 !== null) { const v = parseFloat(py2); if (!isNaN(v)) y2 = v; }
+		if (px1 !== null) {
+			const v = parseFloat(px1);
+			if (!isNaN(v)) x1 = v;
+		}
+		if (py1 !== null) {
+			const v = parseFloat(py1);
+			if (!isNaN(v)) y1 = v;
+		}
+		if (px2 !== null) {
+			const v = parseFloat(px2);
+			if (!isNaN(v)) x2 = v;
+		}
+		if (py2 !== null) {
+			const v = parseFloat(py2);
+			if (!isNaN(v)) y2 = v;
+		}
 		handleCalculate();
 	});
 
@@ -109,7 +120,11 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('nav.tools'), href: '/tools' }, { label: tKey('pages.midpoint.title') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('nav.tools'), href: '/tools' },
+		{ label: tKey('pages.midpoint.title') }
+	]}
 />
 
 <BackButton href="/tools" />
@@ -299,7 +314,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">Midpoint X</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">

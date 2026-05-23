@@ -38,7 +38,7 @@
 
 	let radius = $state(5);
 	let unit = $state<Unit>(getLastUnit());
-	let result = $state<ReturnType<typeof calculateCircle>>(calculateCircle(5));
+	let result = $derived(calculateCircle(radius));
 
 	const BASE_UNIT: Unit = 'cm';
 
@@ -68,7 +68,6 @@
 
 	function handleCalculate() {
 		if (radius <= 0) radius = 0.1;
-		result = calculateCircle(radius);
 		addToHistory('circle', {
 			inputs: `r=${formatNumber(radius)}`,
 			results: `A=${formatNumber(result.area)}, C=${formatNumber(result.perimeter)}`,
@@ -79,7 +78,6 @@
 
 	function handleReset() {
 		radius = 5;
-		result = calculateCircle(radius);
 	}
 
 	function handleUnitChange(oldUnit: Unit, newUnit: Unit) {
@@ -129,7 +127,6 @@
 	});
 
 	$effect(() => {
-		handleCalculate();
 		updateUrl();
 	});
 </script>
@@ -143,7 +140,11 @@
 />
 
 <Breadcrumb
-	items={[{ label: tKey('nav.home'), href: '/' }, { label: tKey('common.geometry2d'), href: '/2d' }, { label: tKey('shapes.circle.name') }]}
+	items={[
+		{ label: tKey('nav.home'), href: '/' },
+		{ label: tKey('common.geometry2d'), href: '/2d' },
+		{ label: tKey('shapes.circle.name') }
+	]}
 />
 
 <BackButton href="/2d" />
@@ -232,7 +233,7 @@
 		<!-- Results -->
 		<div>
 			<p class="micro-label mb-3">{tKey('common.results')}</p>
-			<div class="flex flex-wrap gap-3">
+			<div class="flex flex-wrap gap-3" aria-live="polite" role="status">
 				<div class="result-chip animate-fade-slide-up">
 					<span class="micro-label text-text-muted">{tKey('common.area')}</span>
 					<span class="mt-0.5 font-mono text-2xl font-medium text-emerald-bright">
